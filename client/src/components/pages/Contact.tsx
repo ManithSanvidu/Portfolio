@@ -2,17 +2,12 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { useForm } from "react-hook-form";
 import {
-  Mail,
-  Phone,
   Send,
   Github,
   Linkedin,
   CheckCircle,
   Sparkles,
-  ArrowRight,
-  Download,
-  Copy,
-  Check,
+  ArrowUpRight,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -50,7 +45,6 @@ const socialLinks = [
 
 export function Contact() {
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [copiedType, setCopiedType] = useState<string | null>(null);
 
   const {
     register,
@@ -60,26 +54,76 @@ export function Contact() {
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log("Form submitted:", data);
-    toast.success("Message sent successfully!", {
-      description: "I'll get back to you as soon as possible.",
-    });
-    setIsSubmitted(true);
-    reset();
-    setTimeout(() => setIsSubmitted(false), 3000);
-  };
+    try {
+      const apiKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
 
-  const copyToClipboard = (text: string, type: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedType(type);
-    toast.success(`${type} copied to clipboard!`);
-    setTimeout(() => setCopiedType(null), 2000);
+      // 1. If Web3Forms API key is provided, send email directly in the background
+      if (apiKey && apiKey.trim() !== "" && apiKey !== "your_access_key_here") {
+        const response = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            access_key: apiKey.trim(),
+            name: data.name,
+            email: data.email,
+            message: data.message,
+            subject: `Portfolio Message from ${data.name}`,
+            from_name: "Portfolio Contact Form",
+            replyto: data.email,
+          }),
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          toast.success("Message sent successfully!", {
+            description: "Your message has been sent directly to manithsgamage@gmail.com.",
+          });
+          setIsSubmitted(true);
+          reset();
+          setTimeout(() => setIsSubmitted(false), 4000);
+          return;
+        } else {
+          throw new Error(result.message || "Failed to deliver message");
+        }
+      }
+
+      // 2. Direct fallback: open pre-filled Gmail compose directly to manithsgamage@gmail.com
+      const subject = encodeURIComponent(`Portfolio Message from ${data.name}`);
+      const body = encodeURIComponent(
+        `Name: ${data.name}\nEmail: ${data.email}\n\nMessage:\n${data.message}`
+      );
+      window.open(
+        `https://mail.google.com/mail/?view=cm&fs=1&to=manithsgamage@gmail.com&su=${subject}&body=${body}`,
+        "_blank"
+      );
+
+      toast.success("Opening Gmail to send message!", {
+        description: "Your message has been prepared for manithsgamage@gmail.com.",
+      });
+      setIsSubmitted(true);
+      reset();
+      setTimeout(() => setIsSubmitted(false), 4000);
+    } catch (error) {
+      console.error("Submission error:", error);
+      // Fallback on API error: open pre-filled Gmail compose
+      const subject = encodeURIComponent(`Portfolio Message from ${data.name}`);
+      const body = encodeURIComponent(
+        `Name: ${data.name}\nEmail: ${data.email}\n\nMessage:\n${data.message}`
+      );
+      window.open(
+        `https://mail.google.com/mail/?view=cm&fs=1&to=manithsgamage@gmail.com&su=${subject}&body=${body}`,
+        "_blank"
+      );
+      toast.info("Opened Gmail draft directly to send to manithsgamage@gmail.com.");
+    }
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-20 portfolio-page-surface overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen pt-24 pb-0 portfolio-page-surface overflow-hidden flex flex-col justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
 
         {/* 1. Header / Intro Above the Design Banner */}
         <motion.div
@@ -118,275 +162,8 @@ export function Contact() {
           />
         </motion.div>
 
-        {/* 3. Below Design Content: Email & Phone + Socials "Let's work together!" */}
-        <div className="mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-col items-center text-center mb-10"
-          >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-purple-500/20 bg-purple-500/5 text-[#b783f5] text-xs font-semibold uppercase tracking-[0.2em] mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#b783f5] animate-ping" />
-              Direct Channels & Networks
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-light text-white tracking-tight">
-              Ways to <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100 to-[#b783f5]">Connect</span>
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
-            
-            {/* Email Card - Premium Glassmorphic Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              whileHover={{ y: -6 }}
-              className="relative group rounded-3xl p-[1px] bg-gradient-to-b from-purple-500/30 via-white/10 to-transparent hover:from-purple-500/60 hover:via-purple-500/30 transition-all duration-500 shadow-xl shadow-black/40 hover:shadow-purple-500/10"
-            >
-              <div className="relative h-full rounded-[23px] bg-[#171717]/95 p-6 sm:p-8 backdrop-blur-xl flex flex-col justify-between overflow-hidden">
-                {/* Glow accent in corner */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-purple-500/20 transition-all duration-500" />
-                
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3.5">
-                      <div className="p-3.5 rounded-2xl bg-purple-500/15 border border-purple-500/30 text-[#b783f5] shadow-inner group-hover:scale-110 group-hover:bg-purple-500/25 transition-all duration-300">
-                        <Mail className="w-6 h-6 text-[#b783f5]" />
-                      </div>
-                      <div>
-                        <span className="text-[11px] font-semibold uppercase tracking-wider text-purple-300/80">Primary Contact</span>
-                        <h3 className="text-lg font-bold text-white">Email Address</h3>
-                      </div>
-                    </div>
-                    
-                    <button
-                      onClick={() => copyToClipboard("manithsgamage@gmail.com", "Email")}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 hover:border-purple-400/30 transition-all cursor-pointer"
-                      title="Copy email to clipboard"
-                    >
-                      {copiedType === "Email" ? (
-                        <>
-                          <Check className="w-3.5 h-3.5 text-emerald-400" />
-                          <span className="text-emerald-400">Copied!</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3.5 h-3.5" />
-                          <span>Copy</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  <a
-                    href="mailto:manithsgamage@gmail.com"
-                    className="block text-lg sm:text-xl font-semibold text-white group-hover:text-purple-300 transition-colors break-all mb-2"
-                  >
-                    manithsgamage@gmail.com
-                  </a>
-                  <p className="text-xs text-white/50 leading-relaxed">
-                    Fast response for collaborations, freelance roles, questions, or opportunities.
-                  </p>
-                </div>
-
-                <div className="mt-8 pt-4 border-t border-white/[0.08] flex items-center justify-between">
-                  <span className="text-xs text-white/40">Direct inbox</span>
-                  <a
-                    href="https://mail.google.com/mail/?view=cm&fs=1&to=manithsgamage@gmail.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-xs font-semibold text-purple-200 transition-all group-hover:border-purple-400/50"
-                  >
-                    <span>Send email via Gmail</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </a>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Phone & WhatsApp Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              whileHover={{ y: -6 }}
-              className="relative group rounded-3xl p-[1px] bg-gradient-to-b from-emerald-500/30 via-white/10 to-transparent hover:from-emerald-500/60 hover:via-emerald-500/30 transition-all duration-500 shadow-xl shadow-black/40 hover:shadow-emerald-500/10"
-            >
-              <div className="relative h-full rounded-[23px] bg-[#171717]/95 p-6 sm:p-8 backdrop-blur-xl flex flex-col justify-between overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-emerald-500/20 transition-all duration-500" />
-                
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3.5">
-                      <div className="p-3.5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shadow-inner group-hover:scale-110 group-hover:bg-emerald-500/25 transition-all duration-300">
-                        <Phone className="w-6 h-6 text-emerald-400" />
-                      </div>
-                      <div>
-                        <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-300/80">Call & Chat</span>
-                        <h3 className="text-lg font-bold text-white">Phone & WhatsApp</h3>
-                      </div>
-                    </div>
-                    
-                    <button
-                      onClick={() => copyToClipboard("+94-760429021", "Phone number")}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs font-medium text-white/70 hover:text-white hover:bg-white/10 hover:border-emerald-400/30 transition-all cursor-pointer"
-                      title="Copy phone to clipboard"
-                    >
-                      {copiedType === "Phone number" ? (
-                        <>
-                          <Check className="w-3.5 h-3.5 text-emerald-400" />
-                          <span className="text-emerald-400">Copied!</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3.5 h-3.5" />
-                          <span>Copy</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  <a
-                    href="tel:+94760429021"
-                    className="block text-xl sm:text-2xl font-bold text-white group-hover:text-emerald-400 transition-colors mb-2 tracking-wide"
-                  >
-                    +94-760429021
-                  </a>
-                  <p className="text-xs text-white/50 leading-relaxed">
-                    Available for phone consultations, quick WhatsApp messages, or instant syncs.
-                  </p>
-                </div>
-
-                <div className="mt-8 pt-4 border-t border-white/[0.08] flex items-center justify-between">
-                  <span className="text-xs text-white/40">WhatsApp instant</span>
-                  <a
-                    href="https://wa.me/94760429021"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-xs font-semibold text-emerald-300 transition-all group-hover:border-emerald-400/50"
-                  >
-                    <span>Message on WhatsApp</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </a>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* LinkedIn Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              whileHover={{ y: -6 }}
-              className="relative group rounded-3xl p-[1px] bg-gradient-to-b from-blue-500/30 via-white/10 to-transparent hover:from-blue-500/60 hover:via-blue-500/30 transition-all duration-500 shadow-xl shadow-black/40 hover:shadow-blue-500/10"
-            >
-              <a
-                href="https://www.linkedin.com/in/manith-gamage-4649012b8/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block h-full"
-              >
-                <div className="relative h-full rounded-[23px] bg-[#171717]/95 p-6 sm:p-8 backdrop-blur-xl flex flex-col justify-between overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-blue-500/20 transition-all duration-500" />
-                  
-                  <div>
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-3.5">
-                        <div className="p-3.5 rounded-2xl bg-blue-500/15 border border-blue-500/30 text-blue-400 shadow-inner group-hover:scale-110 group-hover:bg-blue-500/25 transition-all duration-300">
-                          <Linkedin className="w-6 h-6 text-blue-400" />
-                        </div>
-                        <div>
-                          <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-300/80">Professional Network</span>
-                          <h3 className="text-lg font-bold text-white">LinkedIn</h3>
-                        </div>
-                      </div>
-                      
-                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 border border-blue-500/20 text-blue-300">
-                        Profile
-                      </span>
-                    </div>
-
-                    <h4 className="text-xl sm:text-2xl font-bold text-white group-hover:text-blue-300 transition-colors mb-2">
-                      Manith Gamage
-                    </h4>
-                    <p className="text-xs text-white/50 leading-relaxed">
-                      Connect on LinkedIn for professional updates, endorsements, and project partnerships.
-                    </p>
-                  </div>
-
-                  <div className="mt-8 pt-4 border-t border-white/[0.08] flex items-center justify-between">
-                    <span className="text-xs text-blue-400/80 font-medium">Networking & Roles</span>
-                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-300 group-hover:translate-x-1 transition-all">
-                      let's work together! <ArrowRight className="w-3.5 h-3.5" />
-                    </span>
-                  </div>
-                </div>
-              </a>
-            </motion.div>
-
-            {/* GitHub Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              whileHover={{ y: -6 }}
-              className="relative group rounded-3xl p-[1px] bg-gradient-to-b from-purple-400/30 via-white/10 to-transparent hover:from-purple-400/60 hover:via-purple-400/30 transition-all duration-500 shadow-xl shadow-black/40 hover:shadow-purple-500/10"
-            >
-              <a
-                href="https://github.com/ManithSanvidu"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block h-full"
-              >
-                <div className="relative h-full rounded-[23px] bg-[#171717]/95 p-6 sm:p-8 backdrop-blur-xl flex flex-col justify-between overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none group-hover:bg-purple-500/20 transition-all duration-500" />
-                  
-                  <div>
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-3.5">
-                        <div className="p-3.5 rounded-2xl bg-white/[0.08] border border-white/15 text-white shadow-inner group-hover:scale-110 group-hover:bg-white/[0.15] transition-all duration-300">
-                          <Github className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                          <span className="text-[11px] font-semibold uppercase tracking-wider text-purple-300/80">Source Code & Repos</span>
-                          <h3 className="text-lg font-bold text-white">GitHub</h3>
-                        </div>
-                      </div>
-                      
-                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 border border-purple-500/20 text-purple-300">
-                        Open Source
-                      </span>
-                    </div>
-
-                    <h4 className="text-xl sm:text-2xl font-bold text-white group-hover:text-purple-300 transition-colors mb-2">
-                      ManithSanvidu
-                    </h4>
-                    <p className="text-xs text-white/50 leading-relaxed">
-                      Explore full-stack repositories, open-source work, experiments, and code architecture.
-                    </p>
-                  </div>
-
-                  <div className="mt-8 pt-4 border-t border-white/[0.08] flex items-center justify-between">
-                    <span className="text-xs text-purple-300/80 font-medium">Repositories</span>
-                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-purple-300 group-hover:translate-x-1 transition-all">
-                      let's work together! <ArrowRight className="w-3.5 h-3.5" />
-                    </span>
-                  </div>
-                </div>
-              </a>
-            </motion.div>
-
-          </div>
-        </div>
-
-        {/* 4. Contact Form Section */}
-        <div className="grid lg:grid-cols-12 gap-8 items-start mb-20">
+        {/* 3. Contact Form Section */}
+        <div id="contact-form" className="grid lg:grid-cols-12 gap-8 items-start mb-24 scroll-mt-24">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -580,117 +357,164 @@ export function Contact() {
             </Card>
           </motion.div>
         </div>
-
-        {/* 5. Animated Bottom CTA: "Ready to Start a Project?" */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative"
-        >
-          {/* Animated Glow Halo */}
-          <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-purple-600/30 via-indigo-600/20 to-purple-600/30 blur-xl opacity-70 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse pointer-events-none" />
-
-          <Card className="relative p-10 sm:p-14 portfolio-card-dark border-purple-500/30 bg-gradient-to-br from-purple-900/20 via-[#181818]/90 to-black/80 rounded-3xl text-center overflow-hidden backdrop-blur-xl">
-            {/* Ambient Background Circles */}
-            <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.15, 0.3, 0.15],
-              }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-purple-500/20 blur-3xl pointer-events-none"
-            />
-            <motion.div
-              animate={{
-                scale: [1.2, 1, 1.2],
-                opacity: [0.2, 0.35, 0.2],
-              }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none"
-            />
-
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-200 text-xs font-semibold tracking-wider uppercase mb-5 backdrop-blur-md"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-[#b783f5] animate-spin" style={{ animationDuration: "8s" }} />
-              Let's Collaborate
-            </motion.div>
-
-            <motion.h2
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-5"
-            >
-              Ready to Start a Project?
-            </motion.h2>
-
-            <motion.p
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-white/70 text-base sm:text-lg mb-10 max-w-2xl mx-auto leading-relaxed"
-            >
-              I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions.
-            </motion.p>
-
-            {/* Action Buttons with Animations */}
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="flex flex-col sm:flex-row gap-5 justify-center items-center"
-            >
-              {/* Email Me Button */}
-              <motion.a
-                href="https://mail.google.com/mail/?view=cm&fs=1&to=manithsgamage@gmail.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.96 }}
-                className="w-full sm:w-auto"
-              >
-                <Button
-                  size="lg"
-                  className="w-full sm:w-auto px-8 py-6 text-base font-semibold portfolio-gradient-btn text-white border-0 rounded-2xl group shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <Mail className="w-5 h-5 transition-transform group-hover:scale-110" />
-                  <span>Email Me</span>
-                  <ArrowRight className="w-4 h-4 ml-1 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                </Button>
-              </motion.a>
-
-              {/* Download Resume Button */}
-              <motion.a
-                href="/Manith_Gamage_Resume.pdf"
-                download="Manith_Gamage_Resume.pdf"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.96 }}
-                className="w-full sm:w-auto"
-              >
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full sm:w-auto px-8 py-6 text-base font-medium border-white/20 bg-white/[0.04] text-white hover:bg-white/10 hover:border-purple-400/40 rounded-2xl group transition-all flex items-center justify-center gap-2 cursor-pointer backdrop-blur-sm"
-                >
-                  <Download className="w-5 h-5 transition-transform group-hover:-translate-y-0.5 text-[#b783f5]" />
-                  <span>Download Resume</span>
-                </Button>
-              </motion.a>
-            </motion.div>
-          </Card>
-        </motion.div>
-
       </div>
+
+      {/* 4. Full-Width Footer Section (Covers the whole area, no card structure) */}
+      <footer className="w-full border-t border-white/10 bg-[#0f0f11]/95 backdrop-blur-xl relative overflow-hidden mt-16 sm:mt-24">
+        {/* Subtle Ambient Glow matching portfolio style */}
+        <div className="absolute top-0 right-1/4 w-[450px] h-[450px] bg-purple-600/[0.07] rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-[450px] h-[450px] bg-amber-600/[0.04] rounded-full blur-[140px] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            {/* Top Section: 2 Columns */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 lg:gap-24">
+              {/* Left Column: Start a Project */}
+              <div className="flex flex-col">
+                <p className="text-white/50 text-xs sm:text-sm font-light tracking-wide mb-3 sm:mb-4">
+                  Want to work together?
+                </p>
+
+                <a
+                  href="#contact-form"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById("contact-form")?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className="group inline-flex items-center justify-between text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-tight pb-6 sm:pb-8 border-b border-white/15 hover:text-white/80 transition-colors"
+                >
+                  <span>Start a project</span>
+                  <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 stroke-[1.2] text-white group-hover:translate-x-1.5 group-hover:-translate-y-1.5 transition-transform duration-300" />
+                </a>
+
+                {/* Sub details below divider */}
+                <div className="grid grid-cols-2 gap-6 pt-6 sm:pt-8">
+                  <div className="text-xs sm:text-sm text-white/50 font-light leading-relaxed">
+                    <p className="text-white/70">Available for Freelance</p>
+                    <p>Portfolio 2026</p>
+                  </div>
+
+                  <nav className="flex flex-col space-y-2.5 text-xs sm:text-sm font-light">
+                    <a
+                      href="#home"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        document.getElementById("home")?.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className="text-white/60 hover:text-white transition-colors w-fit"
+                    >
+                      Home
+                    </a>
+                    <a
+                      href="#about"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className="text-white/60 hover:text-white transition-colors w-fit"
+                    >
+                      About
+                    </a>
+                    <a
+                      href="#projects"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className="text-white/60 hover:text-white transition-colors w-fit"
+                    >
+                      Projects
+                    </a>
+                    <a
+                      href="#contact"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className="text-white/60 hover:text-white transition-colors w-fit"
+                    >
+                      Contact
+                    </a>
+                  </nav>
+                </div>
+              </div>
+
+              {/* Right Column: Email */}
+              <div className="flex flex-col">
+                {/* Spacer to align baseline with Start a Project */}
+                <div className="hidden md:block text-xs sm:text-sm mb-3 sm:mb-4 select-none opacity-0">
+                  &nbsp;
+                </div>
+
+                <a
+                  href="mailto:manithsgamage@gmail.com"
+                  className="group inline-flex items-center justify-between text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-tight pb-6 sm:pb-8 border-b border-white/15 hover:text-white/80 transition-colors"
+                >
+                  <span>Email</span>
+                  <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 stroke-[1.2] text-white group-hover:translate-x-1.5 group-hover:-translate-y-1.5 transition-transform duration-300" />
+                </a>
+
+                {/* Sub details below divider */}
+                <div className="grid grid-cols-2 gap-6 pt-6 sm:pt-8">
+                  <div className="text-xs sm:text-sm text-white/50 font-light leading-relaxed">
+                    <p className="text-white/70">Don't Like Forms?</p>
+                    <a
+                      href="mailto:manithsgamage@gmail.com"
+                      className="hover:text-white transition-colors text-white/60 underline underline-offset-4 decoration-white/20 hover:decoration-white"
+                    >
+                      Send me an Email.
+                    </a>
+                  </div>
+
+                  <div className="flex flex-col space-y-2.5 text-xs sm:text-sm font-light">
+                    <a
+                      href="https://github.com/ManithSanvidu"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white/60 hover:text-white transition-colors w-fit"
+                    >
+                      Github
+                    </a>
+                    <a
+                      href="https://wa.me/94760429021"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white/60 hover:text-white transition-colors w-fit"
+                    >
+                      WhatsApp
+                    </a>
+                    <a
+                      href="https://www.linkedin.com/in/manith-gamage-4649012b8/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white/60 hover:text-white transition-colors w-fit"
+                    >
+                      Linkedin
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Row Footer */}
+            <div className="mt-16 sm:mt-20 md:mt-24 pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-white/50 font-light">
+              <p>© All rights reserved – Manith Gamage</p>
+              <button
+                type="button"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                className="text-white/50 hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0 font-light"
+              >
+                Back to Top
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      </footer>
     </div>
   );
 }
