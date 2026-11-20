@@ -1,54 +1,39 @@
-import { useState, useEffect, useMemo } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
+
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import profilePic from "../images/profilepic.JPG";
 import {
-  ArrowRight,
-  Briefcase,
-  Award,
-  Users,
-  Sparkles,
   Github,
   Linkedin,
+  ArrowUpRight,
   Mail,
-  ChevronDown,
+  Download,
 } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 
 const roles = [
-  "Mobile App Developer",
   "Full Stack Developer",
+  "Mobile Application Developer",
   "AI & ML Enthusiast",
-  "Problem Solver",
+  "Software Engineer",
 ];
 
 const socials = [
-  { icon: Github, href: "https://github.com/ManithSanvidu", label: "GitHub" },
+  {
+    icon: Github,
+    href: "https://github.com/ManithSanvidu",
+    label: "GitHub",
+  },
   {
     icon: Linkedin,
     href: "https://www.linkedin.com/in/manith-gamage-4649012b8/",
     label: "LinkedIn",
   },
-  { icon: Mail, href: "https://mail.google.com/mail/?view=cm&fs=1&to=manithsgamage@gmail.com", label: "Email" },
-];
-
-const highlights = [
   {
-    icon: Briefcase,
-    title: "Engineering",
-    blurb: "Scalable apps & clean architecture",
-    gradient: "from-blue-500 to-cyan-500",
-  },
-  {
-    icon: Award,
-    title: "Quality",
-    blurb: "Craft, testing, and polish",
-    gradient: "from-violet-500 to-purple-600",
-  },
-  {
-    icon: Users,
-    title: "Collaboration",
-    blurb: "Teams, mentorship, and delivery",
-    gradient: "from-rose-500 to-red-500",
+    icon: Mail,
+    href: "https://mail.google.com/mail/?view=cm&fs=1&to=manithsgamage@gmail.com",
+    label: "Email",
   },
 ];
 
@@ -57,217 +42,220 @@ export function Home() {
   const [displayText, setDisplayText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const particles = useMemo(
-    () =>
-      Array.from({ length: 28 }, (_, i) => ({
-        left: (i * 37 + 11) % 100,
-        top: (i * 53 + 7) % 100,
-        duration: 3 + (i % 5) * 0.45,
-        delay: (i % 8) * 0.28,
-        w: i % 3 === 0 ? 2 : 1,
-      })),
-    []
-  );
-
   useEffect(() => {
     const role = roles[currentRole];
-    const typingSpeed = isDeleting ? 50 : 100;
 
     if (!isDeleting && displayText === role) {
-      const t = setTimeout(() => setIsDeleting(true), 2000);
-      return () => clearTimeout(t);
+      const timeout = setTimeout(() => setIsDeleting(true), 1800);
+      return () => clearTimeout(timeout);
     }
 
     if (isDeleting && displayText === "") {
-      const t = setTimeout(() => {
-        setIsDeleting(false);
-        setCurrentRole((prev) => (prev + 1) % roles.length);
-      }, 0);
-      return () => clearTimeout(t);
+      setIsDeleting(false);
+      setCurrentRole((prev) => (prev + 1) % roles.length);
+      return;
     }
 
     const timeout = setTimeout(() => {
       setDisplayText(
-        isDeleting ? role.substring(0, displayText.length - 1) : role.substring(0, displayText.length + 1)
+        isDeleting
+          ? role.substring(0, displayText.length - 1)
+          : role.substring(0, displayText.length + 1)
       );
-    }, typingSpeed);
+    }, isDeleting ? 45 : 90);
 
     return () => clearTimeout(timeout);
   }, [displayText, isDeleting, currentRole]);
 
   return (
-    <div className="relative flex-1 min-h-[100dvh] overflow-hidden portfolio-hero-ai-surface">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/4 -left-32 w-[420px] h-[420px] rounded-full bg-blue-600/20 blur-[100px]"
-          animate={{ opacity: [0.5, 0.8, 0.5], scale: [1, 1.08, 1] }}
-          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 -right-32 w-[400px] h-[400px] rounded-full bg-purple-600/18 blur-[100px]"
-          animate={{ opacity: [0.45, 0.75, 0.45], scale: [1, 1.1, 1] }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        />
+    <main className="relative min-h-[100dvh] overflow-hidden bg-[#151515] text-white flex flex-col">
+
+      {/* Background */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#191919] via-[#111111] to-[#171717]" />
+
+        <div className="absolute left-[35%] top-[20%] w-[350px] h-[350px] bg-purple-600/[0.04] blur-[130px] rounded-full" />
       </div>
 
-      {particles.map((p, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full bg-white pointer-events-none"
-          style={{
-            left: `${p.left}%`,
-            top: `${p.top}%`,
-            width: p.w,
-            height: p.w,
-            boxShadow: "0 0 6px rgba(255,255,255,0.4)",
-          }}
-          animate={{ opacity: [0.15, 0.55, 0.15] }}
-          transition={{
-            duration: p.duration,
-            repeat: Infinity,
-            delay: p.delay,
-          }}
-        />
-      ))}
+      {/* Header */}
+      <header className="relative z-30 flex items-center justify-between px-6 md:px-12 py-7">
 
-      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 min-h-[100dvh] flex flex-col items-center justify-center pt-24 pb-16 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex flex-col items-center w-full"
+        <a
+          href="#home"
+          className="text-2xl font-bold tracking-tight text-[#b783f5]"
         >
-          {/* Circular profile — glowing purple–blue ring */}
-          <div className="relative mb-6">
-            <div
-              className="absolute -inset-4 md:-inset-6 rounded-full opacity-100 blur-xl md:blur-2xl"
-              style={{
-                background: "linear-gradient(135deg, #2563eb, #3b82f6, #9333ea, #db2777)",
-              }}
-            />
-            <div
-              className="relative rounded-full p-[4px]"
-              style={{
-                boxShadow:
-                  "0 0 40px rgba(139, 92, 246, 0.8), 0 0 80px rgba(37, 99, 235, 0.5), inset 0 0 0 2px rgba(255,255,255,0.15)",
-                background: "linear-gradient(145deg, rgba(147,51,234,0.6), rgba(59,130,246,0.6))",
-              }}
+          manith<span className="text-white">.</span>
+        </a>
+
+        
+
+        <a
+          href="#contact"
+          className="flex items-center gap-2 text-sm text-white hover:text-[#bb87f7] transition-colors"
+        >
+          Let's Talk
+          <ArrowUpRight size={16} />
+        </a>
+      </header>
+
+      {/* Main Hero */}
+      <section
+        id="home"
+        className="relative z-10 flex-1 flex items-center"
+      >
+        <div className="relative w-full max-w-[1600px] mx-auto px-6 md:px-12">
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 items-center min-h-[650px]">
+
+            {/* Left: Profile Image */}
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="relative flex justify-center lg:justify-start items-center"
             >
-              <div className="w-40 h-40 sm:w-48 sm:h-48 rounded-full overflow-hidden bg-[#0b0e14] ring-2 ring-black/40">
+
+              {/* Portrait */}
+              <div className="relative w-full max-w-[480px] h-[400px] sm:h-[520px] lg:h-[620px]">
+
                 <ImageWithFallback
                   src={profilePic}
                   alt="Manith Gamage"
-                  width={192}
-                  height={192}
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-cover object-center grayscale"
                 />
-              </div>
-            </div>
-          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] backdrop-blur-md px-4 py-2 text-sm text-slate-200 mb-8"
-          >
-            <Sparkles className="w-4 h-4 text-cyan-300" />
-            Welcome to my portfolio
-          </motion.div>
+                {/* Image overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#151515]/80 via-transparent to-[#151515]/10" />
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white mb-4">
-            Hi, I&apos;m{" "}
-            <span className="text-blue-500">Manith</span> <span className="text-fuchsia-500">Gamage</span>
-          </h1>
+                <div className="absolute bottom-7 left-5 md:left-8">
+                  <p className="text-sm font-semibold tracking-[0.18em] text-white">
+                    MANITH GAMAGE
+                  </p>
 
-          <div className="text-lg sm:text-xl md:text-2xl text-slate-300 mb-6 min-h-[2.5rem] flex items-center justify-center gap-1 font-medium">
-            <span className="font-mono text-slate-200">
-              {displayText}
-              <span className="text-fuchsia-400 animate-pulse">|</span>
-            </span>
-          </div>
-
-          <p className="text-slate-400 text-base sm:text-lg max-w-xl leading-relaxed mb-10">
-            Crafting beautiful, functional, and scalable web applications with modern technologies. Passionate about
-            clean code, AI-assisted workflows, and exceptional user experiences.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto mb-10">
-            <motion.a
-              href="#projects"
-              className="portfolio-gradient-btn inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-sm font-semibold text-white w-full sm:w-auto"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              View My Work
-              <ArrowRight className="w-4 h-4" />
-            </motion.a>
-            <motion.a
-              href="/Manith.Gamage.Resume.pdf"
-              download="Manith.Gamage.Resume.pdf"
-              className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-slate-950 hover:bg-slate-100 shadow-md transition-all w-full sm:w-auto"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              Download Resume
-            </motion.a>
-            <motion.a
-              href="#about"
-              className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3.5 text-sm font-bold text-slate-950 hover:bg-slate-100 shadow-md transition-all w-full sm:w-auto"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              About me
-            </motion.a>
-          </div>
-
-          <div className="flex items-center justify-center gap-4 mb-14">
-            {socials.map(({ icon: Icon, href, label }) => (
-              <motion.a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/[0.04] text-white backdrop-blur-sm hover:border-white/40 hover:bg-white/10 transition-colors"
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Icon className="w-[18px] h-[18px]" />
-              </motion.a>
-            ))}
-          </div>
-
-          <motion.button
-            type="button"
-            onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
-            className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-300 transition-colors mb-12"
-          >
-            Scroll to explore <ChevronDown className="w-4 h-4" />
-          </motion.button>
-
-          {/* Bottom highlight cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-4xl">
-            {highlights.map(({ icon: Icon, title, blurb, gradient }, i) => (
-              <motion.div
-                key={title}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + i * 0.08 }}
-                className="portfolio-card-dark p-5 text-left"
-              >
-                <div
-                  className={`inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} mb-3 shadow-lg`}
-                >
-                  <Icon className="w-5 h-5 text-white" />
+                  <p className="text-xs text-white/55 mt-2 tracking-wider">
+                    SOFTWARE DEVELOPER
+                  </p>
                 </div>
-                <h3 className="font-semibold text-white mb-1">{title}</h3>
-                <p className="text-sm text-slate-400 leading-snug">{blurb}</p>
-              </motion.div>
-            ))}
+              </div>
+
+              {/* Geometric decorations */}
+              <div className="absolute right-[-10px] lg:right-[-40px] top-[16%] flex flex-col items-center">
+
+                <motion.div
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                  className="w-3 h-3 rounded-full bg-[#a46cdb] mb-5"
+                />
+
+                <motion.div
+                  animate={{ rotate: [0, 90, 180, 270, 360] }}
+                  transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                  className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-[#b47af2]"
+                />
+
+                <div className="absolute top-[-15px] right-[-25px] w-10 h-10 md:w-14 md:h-14 rounded-full bg-[#eeeae5]" />
+
+                <div className="mt-2 w-28 h-28 md:w-32 md:h-32 rounded-full border-[20px] md:border-[24px] border-[#eeeae5] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-[#151515]" />
+                </div>
+
+              </div>
+            </motion.div>
+
+            {/* Right: Introduction */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="relative flex flex-col justify-center pt-16 lg:pt-0 lg:pl-16"
+            >
+
+              <p className="text-[#b783f5] text-xs md:text-sm font-semibold tracking-[0.3em] uppercase mb-7">
+                Welcome to my creative space
+              </p>
+
+              <h1 className="text-[48px] sm:text-[68px] md:text-[82px] xl:text-[100px] leading-[0.95] font-light tracking-[-0.055em]">
+                MANITH
+                <br />
+                <span className="font-semibold text-white">
+                  GAMAGE<span className="text-[#b783f5]">.</span>
+                </span>
+              </h1>
+
+              {/* Animated Role */}
+              <div className="mt-9 flex items-center gap-3">
+                <div className="w-8 h-[2px] bg-[#b783f5]" />
+
+                <p className="text-[#b783f5] text-sm md:text-base font-medium tracking-wide min-h-6">
+                  {displayText}
+                  <span className="animate-pulse">|</span>
+                </p>
+              </div>
+
+              {/* Description */}
+              <p className="mt-7 max-w-md text-white/55 text-sm md:text-base leading-8">
+                Empowering innovation through AI-driven web and mobile
+                applications. I transform ideas into intelligent,
+                functional and meaningful digital experiences.
+              </p>
+
+              {/* Skills / Focus */}
+              <div className="flex flex-wrap gap-x-5 gap-y-2 mt-8 text-[11px] md:text-xs uppercase tracking-[0.15em] text-white/40">
+                <span>AI Integration</span>
+                <span>·</span>
+                <span>Web Development</span>
+                <span>·</span>
+                <span>Mobile Apps</span>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-wrap items-center gap-8 mt-12">
+
+                <a
+                  href="#contact"
+                  className="group flex items-center gap-3 text-sm font-semibold text-white hover:text-[#b783f5] transition-colors"
+                >
+                  Let's get in touch
+
+                  <ArrowUpRight
+                    size={17}
+                    className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
+                  />
+                </a>
+
+                <a
+                  href="/Manith_Gamage_Resume.pdf"
+                  download="Manith_Gamage_Resume.pdf"
+                  className="flex items-center gap-2 text-sm text-white/55 hover:text-white transition-colors"
+                >
+                  <Download size={15} />
+                  Download Resume
+                </a>
+
+              </div>
+
+              {/* Social links */}
+              <div className="flex items-center gap-5 mt-12">
+                {socials.map(({ icon: Icon, href, label }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="text-white/40 hover:text-[#b783f5] transition-colors duration-300"
+                  >
+                    <Icon size={19} />
+                  </a>
+                ))}
+              </div>
+
+            </motion.div>
+
           </div>
-        </motion.div>
-      </div>
-    </div>
+        </div>
+      </section>
+      
+    </main>
   );
 }

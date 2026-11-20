@@ -1,269 +1,321 @@
-import { motion } from "motion/react";
-import {
-  Award,
-  Calendar,
-  CheckCircle,
-  ExternalLink,
-  Shield,
-  Star,
-  Trophy,
-  Verified,
-} from "lucide-react";
-import { Card } from "../ui/card";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import googleCloud from '../images/genAI.jpg';
-import jsBasic from '../images/js.jpg';
-import simplilearn from '../images/simplilearn.jpg';
-import pythonMoratuwa from '../images/pythonMoratuwa.jpg';
 
-const certifications = [
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence, type Variants } from "motion/react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  Sparkles,
+  BookOpen,
+} from "lucide-react";
+import { Button } from "../ui/button";
+
+// Import certificate images
+import python1 from "../images/python1.jfif";
+import azure1 from "../images/azure1.jfif";
+import docker from "../images/docker.jfif";
+import vector1 from "../images/vector1.jfif";
+import pythonMoratuwa from "../images/pythonMoratuwa.jpg";
+
+interface CertificateBookPage {
+  id: number;
+  title: string;
+  image: string;
+  color: string;
+  issuer?: string;
+  verifyUrl?: string;
+}
+
+const certificatePages: CertificateBookPage[] = [
   {
     id: 1,
-    title: "Python for Beginners",
-    issuer: "University of Moratuwa",
-    date: "March 2026",
-    credentialId: "fGSBIXqOJj",
-    skills: ["Python","Poject management"],
-    icon: Shield,
-    color: "from-orange-500 to-red-500",
-    status: "Active",
-    verifyUrl: "https://open.uom.lk/lms/mod/customcert/verify_certificate.php",
-    image:
-      pythonMoratuwa,
+    title: "Python Programming & Applications",
+    image: python1,
+    color: "from-blue-500 to-indigo-600",
+    issuer: "Python Certification",
   },
   {
     id: 2,
-    title: "Javascript Basic",
-    issuer: "HackerRank",
-    date: "March 2026",
-    skills: ["Javascript","Problem solving skills"],
-    icon: Trophy,
-    color: "from-blue-500 to-cyan-500",
-    status: "Active",
-    image:
-      jsBasic,
+    title: "Microsoft Azure Fundamentals",
+    image: azure1,
+    color: "from-sky-500 to-blue-600",
+    issuer: "Microsoft Azure",
   },
   {
     id: 3,
-    title: "AI Agents for Beginners",
-    issuer: "Simplilearn",
-    date: "March 2026",
-    credentialId: "10002409",
-    skills: ["Agentic AI","Machine Learning","CNN","AI automation"],
-    icon: Star,
-    color: "from-purple-500 to-pink-500",
-    status: "Active",
-    verifyUrl: "https://simpli-web.app.link/e/VElnIhCQM1b",
-    image:
-      simplilearn,
+    title: "Docker Containerization & DevOps",
+    image: docker,
+    color: "from-cyan-500 to-blue-600",
+    issuer: "Docker",
   },
   {
     id: 4,
-    title: "Introduction to Generative AI",
-    issuer: "Google Cloud",
-    date: "March 2026",
-    skills: ["Generative AI","CNN","Creative thinking"],
-    icon: Award,
-    color: "from-green-500 to-emerald-500",
-    status: "Active",
-    verifyUrl: "https://www.skills.google/public_profiles/9e39603a-4de8-491e-9888-5cdf0ae2d394/badges/23165853",
-    image:
-      googleCloud,
+    title: "Vector Search & AI Embeddings",
+    image: vector1,
+    color: "from-violet-500 to-purple-600",
+    issuer: "Vector Database & AI",
   },
-];
-
-const stats = [
-  { label: "Total Certifications", value: certifications.length, icon: Award },
   {
-    label: "Active Status",
-    value: certifications.filter((c) => c.status === "Active").length,
-    icon: CheckCircle,
+    id: 5,
+    title: "Python for Beginners - University of Moratuwa",
+    image: pythonMoratuwa,
+    color: "from-orange-500 to-red-500",
+    issuer: "University of Moratuwa",
+    verifyUrl:
+      "https://open.uom.lk/lms/mod/customcert/verify_certificate.php",
   },
-  { label: "Cloud Platforms", value: "3+", icon: Shield },
-  { label: "Latest This Year", value: "2", icon: Calendar },
 ];
 
 export function Certifications() {
+  const [currentPage, setCurrentPage] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Auto flip every 4 seconds
+  useEffect(() => {
+    if (isPaused) return;
+
+    const timer = setInterval(() => {
+      setDirection(1);
+      setCurrentPage((prev) => (prev + 1) % certificatePages.length);
+    }, 4000);
+
+    return () => clearInterval(timer);
+  }, [isPaused]);
+
+  const nextPage = () => {
+    setDirection(1);
+    setCurrentPage((prev) => (prev + 1) % certificatePages.length);
+  };
+
+  const prevPage = () => {
+    setDirection(-1);
+    setCurrentPage(
+      (prev) =>
+        (prev - 1 + certificatePages.length) % certificatePages.length
+    );
+  };
+
+  const currentCert = certificatePages[currentPage];
+
+  // 3D page flip transition variants
+  const pageVariants: Variants = {
+    enter: (dir: number) => ({
+      rotateY: dir > 0 ? 80 : -80,
+      opacity: 0,
+      scale: 0.94,
+      transformOrigin: dir > 0 ? "left center" : "right center",
+    }),
+
+    center: {
+      rotateY: 0,
+      opacity: 1,
+      scale: 1,
+      transformOrigin: "center center",
+      transition: {
+        duration: 0.65,
+        ease: [0.25, 1, 0.5, 1] as const,
+      },
+    },
+
+    exit: (dir: number) => ({
+      rotateY: dir > 0 ? -80 : 80,
+      opacity: 0,
+      scale: 0.94,
+      transformOrigin: dir > 0 ? "left center" : "right center",
+      transition: {
+        duration: 0.5,
+        ease: [0.5, 0, 0.75, 0] as const,
+      },
+    }),
+  };
+
   return (
-    <div className="min-h-full pt-20 pb-12 md:pt-24 md:pb-16 portfolio-page-surface">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-full pt-20 pb-16 md:pt-24 md:pb-20 portfolio-page-surface select-none">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-10 md:mb-14"
         >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5, type: "spring" }}
-            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-sky-500 to-violet-600 shadow-lg shadow-violet-500/30 mb-6"
-          >
-            <Trophy className="w-10 h-10 text-white" />
-          </motion.div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
-            Professional <span className="portfolio-gradient-text">Certifications</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#b783f5]/20 bg-[#b783f5]/5 text-[#b783f5] text-xs font-semibold tracking-[0.25em] uppercase mb-4 backdrop-blur-sm">
+            <Sparkles size={13} className="text-[#b783f5]" />
+            Accreditations & Badges
+          </div>
+
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.03em] mb-4 text-white">
+            Professional{" "}
+            <span className="font-semibold text-white">
+              Achievements
+              <span className="text-[#b783f5]">.</span>
+            </span>
           </h1>
-          <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto">
-            Continuously learning and validating expertise through industry-recognized certifications
+
+          <p className="text-base sm:text-lg text-white/50 max-w-2xl mx-auto leading-relaxed">
+            Interactive certificate album. Flips automatically every 4
+            seconds, or click anywhere on the book to turn the page.
           </p>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16"
+        {/* Interactive 3D Book Container */}
+        <div
+          className="relative max-w-3xl mx-auto"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
         >
-          {stats.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-              >
-                <Card className="p-6 portfolio-card-dark border-white/[0.08] hover:border-violet-500/20 transition-all text-center rounded-2xl">
-                  <Icon className="w-8 h-8 text-sky-400 mx-auto mb-2" />
-                  <div className="text-3xl font-bold portfolio-gradient-text mb-1">
-                    {stat.value}
-                  </div>
-                  <div className="text-xs sm:text-sm text-slate-400">{stat.label}</div>
-                </Card>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+          {/* Ambient Glow */}
+          <div className="absolute -inset-2 bg-gradient-to-r from-purple-600/20 via-[#b783f5]/15 to-blue-600/20 rounded-3xl blur-2xl -z-10 transition-all duration-700 pointer-events-none" />
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {certifications.map((cert, index) => {
-            const Icon = cert.icon;
-            return (
-              <motion.div
-                key={cert.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className="group overflow-hidden portfolio-card-dark border-white/[0.08] hover:border-violet-500/25 transition-all hover:shadow-lg hover:shadow-violet-500/10 h-full rounded-2xl">
-                  <div className="relative h-32 overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900">
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.4 }}
-                      className="h-full opacity-30 group-hover:opacity-40 transition-opacity"
-                      style={{
-                        backgroundImage: `url(${cert.image})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent" />
+          {/* Book Outer Cover */}
+          <div
+            onClick={nextPage}
+            className="cursor-pointer group relative bg-[#141416] border border-white/10 rounded-2xl md:rounded-3xl p-3 sm:p-5 md:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.85)] hover:border-[#b783f5]/40 transition-all duration-300"
+            style={{ perspective: 1400 }}
+          >
+            {/* Spine Highlight */}
+            <div className="absolute left-0 top-0 bottom-0 w-3 sm:w-4 bg-gradient-to-r from-[#0a0a0c] via-black/40 to-transparent rounded-l-2xl md:rounded-l-3xl z-30 pointer-events-none border-r border-white/5" />
 
-                    <motion.div
-                      whileHover={{ rotate: 360 }}
-                      transition={{ duration: 0.6 }}
-                      className={`absolute top-4 right-4 p-3 rounded-full bg-gradient-to-r ${cert.color}`}
-                    >
-                      <Icon className="w-6 h-6 text-white" />
-                    </motion.div>
+            <div className="absolute left-3 sm:left-4 top-0 bottom-0 w-px bg-white/10 z-30 pointer-events-none" />
 
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        {cert.status}
-                      </Badge>
-                    </div>
-                  </div>
-
-                  <div className="p-6 space-y-4">
-                    <div>
-                      <h3 className="text-xl font-bold mb-2 text-white group-hover:text-sky-300 transition-colors">
-                        {cert.title}
-                      </h3>
-                      <div className="flex items-center gap-2 text-gray-300 mb-1">
-                        <Award className="w-4 h-4" />
-                        <span className="text-sm font-medium">{cert.issuer}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-gray-400">
-                        <Calendar className="w-4 h-4" />
-                        <span className="text-sm">{cert.date}</span>
-                      </div>
-                    </div>
-
-                    <div className="p-3 rounded-lg bg-gray-900/50 border border-gray-700">
-                      <p className="text-xs text-gray-500 mb-1">Credential ID</p>
-                      <code className="text-sm text-blue-400 font-mono">{cert.credentialId}</code>
-                    </div>
-
-                    <div>
-                      <p className="text-sm text-gray-500 mb-2">Skills Validated</p>
-                      <div className="flex flex-wrap gap-2">
-                        {cert.skills.map((skill) => (
-                          <Badge
-                            key={skill}
-                            variant="secondary"
-                            className="bg-gray-700/50 text-gray-300 hover:bg-gray-700"
-                          >
-                            {skill}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                      <Button
-                        variant="outline"
-                        className="w-full border-gray-700 hover:border-blue-500 hover:bg-blue-500/10 hover:text-blue-400 transition-all"
-                        asChild
-                      >
-                        <a href={cert.verifyUrl} target="_blank" rel="noopener noreferrer">
-                          <Verified className="w-4 h-4 mr-2" />
-                          Verify Credential
-                          <ExternalLink className="w-4 h-4 ml-2" />
-                        </a>
-                      </Button>
-                    </motion.div>
-                  </div>
-                </Card>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="mt-16"
-        >
-          <Card className="p-10 sm:p-12 portfolio-card-dark border-violet-500/20 bg-gradient-to-br from-violet-500/8 to-transparent text-center rounded-2xl">
-            <Trophy className="w-16 h-16 text-violet-400 mx-auto mb-4" />
-            <h2 className="text-3xl font-bold mb-4">Committed to Continuous Learning</h2>
-            <p className="text-slate-400 mb-6 max-w-2xl mx-auto">
-              These certifications represent my dedication to staying current with the latest technologies and best
-              practices in software development and cloud architecture.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                className="portfolio-gradient-btn text-white border-0 rounded-xl"
-                asChild
-              >
-                <a href="#projects">
-                  View Projects
-                  <ExternalLink className="w-5 h-5 ml-2" />
-                </a>
-              </Button>
-              <Button size="lg" variant="outline" className="border-white/15 text-white hover:bg-white/10 rounded-xl" asChild>
-                <a href="#contact">Get In Touch</a>
-              </Button>
+            {/* Book Spine Stitch */}
+            <div className="absolute inset-y-0 left-1 sm:left-2 flex flex-col justify-around py-8 z-30 pointer-events-none opacity-40">
+              <span className="w-1.5 h-1.5 rounded-full bg-white/50 mb-4" />
+              <span className="w-1.5 h-1.5 rounded-full bg-white/50 mb-4" />
+              <span className="w-1.5 h-1.5 rounded-full bg-white/50" />
             </div>
-          </Card>
-        </motion.div>
+
+            {/* Inner Book Page Container */}
+            <div className="relative overflow-hidden rounded-xl md:rounded-2xl bg-[#0d0d0f] border border-white/[0.06] aspect-[4/3] sm:aspect-[16/11] flex items-center justify-center">
+              <AnimatePresence custom={direction} mode="wait">
+                <motion.div
+                  key={currentPage}
+                  custom={direction}
+                  variants={pageVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  className="absolute inset-0 flex flex-col justify-between p-3 sm:p-5 md:p-6 bg-[#161619]"
+                >
+                  {/* Top Bar */}
+                  <div className="flex items-center justify-between pb-3 border-b border-white/[0.08] z-10">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="w-4 h-4 text-[#b783f5]" />
+
+                      <span className="text-xs sm:text-sm font-medium text-white/80 tracking-wide truncate max-w-[200px] sm:max-w-xs">
+                        {currentCert.issuer || "Certificate"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] sm:text-xs text-white/40 tracking-widest uppercase font-mono">
+                        Page {currentPage + 1} of {certificatePages.length}
+                      </span>
+
+                      {currentCert.verifyUrl && (
+                        <a
+                          href={currentCert.verifyUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="inline-flex items-center gap-1 text-[11px] text-[#b783f5] hover:text-[#d3abfc] underline ml-2 transition-colors"
+                        >
+                          Verify
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Certificate Image Stage */}
+                  <div className="relative flex-1 my-3 flex items-center justify-center overflow-hidden rounded-lg bg-black/60 shadow-inner border border-white/5 group-hover:border-white/10 transition-colors">
+                    <img
+                      src={currentCert.image}
+                      alt={currentCert.title}
+                      className="max-h-full max-w-full object-contain drop-shadow-md select-none transition-transform duration-500 group-hover:scale-[1.01]"
+                      draggable={false}
+                    />
+
+                    {/* Page Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-black/10 pointer-events-none" />
+                  </div>
+
+                  {/* Bottom Footer */}
+                  <div className="flex items-center justify-between pt-2 border-t border-white/[0.06] text-xs text-white/50">
+                    <p className="font-medium text-white/90 text-xs sm:text-sm truncate pr-2">
+                      {currentCert.title}
+                    </p>
+
+                    <span className="hidden sm:inline-block text-[11px] text-[#b783f5]/80 shrink-0">
+                      Tap page to flip &rarr;
+                    </span>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Book Corner Flip Badge */}
+            <div className="absolute bottom-5 right-5 sm:bottom-8 sm:right-8 z-30 pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity">
+              <span className="text-[10px] sm:text-xs px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-white/70 shadow-lg">
+                Click to turn page
+              </span>
+            </div>
+          </div>
+
+          {/* Navigation Controls & Pagination Dots */}
+          <div className="flex items-center justify-between mt-6 px-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={prevPage}
+              className="border-white/10 hover:border-[#b783f5]/40 hover:bg-[#b783f5]/10 text-white rounded-xl gap-1 transition-all"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>Previous</span>
+            </Button>
+
+            {/* Pagination Indicators */}
+            <div className="flex items-center gap-2">
+              {certificatePages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDirection(index > currentPage ? 1 : -1);
+                    setCurrentPage(index);
+                  }}
+                  aria-label={`Go to page ${index + 1}`}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    index === currentPage
+                      ? "w-7 bg-[#b783f5]"
+                      : "w-2 bg-white/20 hover:bg-white/40"
+                  }`}
+                />
+              ))}
+            </div>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={nextPage}
+              className="border-white/10 hover:border-[#b783f5]/40 hover:bg-[#b783f5]/10 text-white rounded-xl gap-1 transition-all"
+            >
+              <span>Next</span>
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+
+          {/* Auto-flip Status Hint */}
+          <div className="text-center mt-3">
+            <span className="text-[11px] text-white/40">
+              {isPaused
+                ? "Auto-flip paused on hover"
+                : "Auto-turning page every 4s"}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

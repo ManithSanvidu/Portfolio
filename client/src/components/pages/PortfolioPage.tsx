@@ -15,6 +15,18 @@ export function PortfolioPage() {
   const location = useLocation();
 
   useEffect(() => {
+    // If page was reloaded, prevent auto-scrolling to any hash and stay at top
+    const navEntries = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
+    const isReload =
+      (navEntries.length > 0 && navEntries[0].type === "reload") ||
+      // @ts-expect-error fallback
+      performance?.navigation?.type === 1;
+
+    if (isReload) {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      return;
+    }
+
     const hash = location.hash.replace(/^#/, "");
     if (hash) {
       requestAnimationFrame(() => scrollToId(hash));

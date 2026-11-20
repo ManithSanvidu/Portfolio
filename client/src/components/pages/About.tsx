@@ -1,109 +1,169 @@
-import { motion } from "motion/react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
-  Code2,
-  Palette,
-  Database,
-  Smartphone,
   Briefcase,
   GraduationCap,
+  Sparkles,
+  Bot,
+  BrainCircuit,
+  Terminal,
+  Cpu,
+  Layers,
+  ChevronLeft,
+  ChevronRight,
+  Building2,
+  CheckCircle2,
+  Flame,
+  Globe,
+  Database,
+  Cloud,
+  Pause,
+  Play,
 } from "lucide-react";
-import { Progress } from "../ui/progress";
-import { Card } from "../ui/card";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
-import profilePic from "../images/profilepic.JPG";
+import aboutMeImg from "../images/aboutme.png";
+import waveAnimation from "../images/Nine-Frame Friendly Wave Animation.gif";
 
-const skills = [
+interface SkillItem {
+  name: string;
+  category: "Frontend" | "Backend" | "AI & ML" | "Database & Cloud";
+  tag: string;
+  iconType: "code" | "ai" | "db" | "cloud" | "mobile";
+}
+
+const skillsList: SkillItem[] = [
+  { name: "React", category: "Frontend", tag: "UI / Web Library", iconType: "code" },
+  { name: "JavaScript", category: "Frontend", tag: "Core Language", iconType: "code" },
+  { name: "Flutter", category: "Frontend", tag: "Cross-Platform Mobile", iconType: "mobile" },
+  { name: "C#", category: "Backend", tag: ".NET Core / Services", iconType: "code" },
+  { name: "Java", category: "Backend", tag: "Enterprise Backend", iconType: "code" },
+  { name: "Python", category: "Backend", tag: "Data, Backend & AI", iconType: "code" },
+  { name: "Docker", category: "Database & Cloud", tag: "Containerization", iconType: "cloud" },
+  { name: "Github actions", category: "Database & Cloud", tag: "CI/CD Workflows", iconType: "cloud" },
+  { name: "AWS", category: "Database & Cloud", tag: "Cloud Infrastructure", iconType: "cloud" },
+  { name: "MongoDB", category: "Database & Cloud", tag: "Document Database", iconType: "db" },
+  { name: "MySQL", category: "Database & Cloud", tag: "Relational SQL", iconType: "db" },
+  { name: "Microsoft SQL", category: "Database & Cloud", tag: "Enterprise MSSQL", iconType: "db" },
+  { name: "PostgreSQL", category: "Database & Cloud", tag: "Advanced SQL", iconType: "db" },
+  { name: "LangChain", category: "AI & ML", tag: "LLM Orchestration", iconType: "ai" },
+  { name: "LangGraph", category: "AI & ML", tag: "Multi-Agent Frameworks", iconType: "ai" },
+  { name: "RAG", category: "AI & ML", tag: "Retrieval-Augmented Gen", iconType: "ai" },
+  { name: "Machine Learning", category: "AI & ML", tag: "Supervised & Unsupervised", iconType: "ai" },
+  { name: "CNN", category: "AI & ML", tag: "Convolutional Networks", iconType: "ai" },
+  { name: "YOLOv8", category: "AI & ML", tag: "Real-Time Computer Vision", iconType: "ai" },
+];
+
+const skillCategories = ["All", "Frontend", "Backend", "AI & ML", "Database & Cloud"] as const;
+
+interface TimelineSlide {
+  id: number;
+  badge: string;
+  step: string;
+  title: string;
+  organization?: string;
+  period: string;
+  description: string;
+  icon: typeof Briefcase;
+  tags: string[];
+}
+
+const timelineSlides: TimelineSlide[] = [
   {
-    name: "Java",
-    level: 95,
-    icon: Code2,
-    color: "from-blue-500 to-cyan-500",
-    logo: "https://static.vecteezy.com/system/resources/previews/022/100/214/original/java-logo-transparent-free-png.png",
+    id: 1,
+    step: "01",
+    badge: "Industry Experience",
+    title: "Software Engineering Intern",
+    organization: "Airport and Aviation Services (Sri Lanka) (Pvt) Ltd",
+    period: "2026 June - Present",
+    description:
+      "Leading development of enterprise web applications, building scalable full-stack features, and engineering modern digital systems.",
+    icon: Briefcase,
+    tags: ["Enterprise Systems", "Web Architecture", "Full-Stack Development"],
   },
   {
-    name: "React &Next Js.",
-    level: 90,
-    icon: Code2,
-    color: "from-blue-500 to-cyan-500",
-    logo: "https://images.unsplash.com/photo-1646122580600-4d6cffc926fe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyZWFjdCUyMGphdmFzY3JpcHQlMjBsb2dvfGVufDF8fHx8MTc3NTM1NjQyNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    id: 2,
+    step: "02",
+    badge: "Higher Education",
+    title: "BSc (Hons) in IT Specializing in Artificial Intelligence",
+    organization: "SLIIT",
+    period: "2024 - 2028",
+    description:
+      "An undergraduate at Sri Lanka Institute of Information Technology specializing in Artificial Intelligence, with a strong focus on developing intelligent systems and data-driven solutions.",
+    icon: GraduationCap,
+    tags: ["Artificial Intelligence", "Intelligent Systems", "Deep Learning"],
   },
   {
-    name: "TypeScript",
-    level: 88,
-    icon: Code2,
-    color: "from-blue-600 to-blue-400",
-    logo: "https://images.unsplash.com/photo-1770734360042-676ef707d022?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0eXBlc2NyaXB0JTIwcHJvZ3JhbW1pbmclMjBsYW5ndWFnZXxlbnwxfHx8fDE3NzUzNTY0Mjd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+    id: 3,
+    step: "03",
+    badge: "Secondary Education",
+    title: "Royal College",
+    organization: "School",
+    period: "2020 - 2023",
+    description:
+      "Completed my Advanced Level studies at Royal College Colombo in the Mathematics stream, building strong analytical and mathematical problem-solving foundations.",
+    icon: Building2,
+    tags: ["Mathematics Stream", "Analytical Problem Solving", "Royal College Colombo"],
   },
   {
-    name: "UI/UX Design",
-    level: 85,
-    icon: Palette,
-    color: "from-purple-500 to-pink-500",
-    logo: "https://images.unsplash.com/photo-1643116774075-acc00caa9a7b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxuZXh0anMlMjBwcm9ncmFtbWluZyUyMGNvZGV8ZW58MXx8fHwxNzc1MzU2NDI2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-  },
-  {
-    name: "Node.js & Express",
-    level: 80,
-    icon: Database,
-    color: "from-green-500 to-emerald-500",
-    logo: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxub2RlanMlMjBqYXZhc2NyaXB0JTIwYmFja2VuZHxlbnwxfHx8fDE3NzUzNTY0Mjd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-  },
-  {
-    name: "MongoDB & SQL",
-    level: 75,
-    icon: Database,
-    color: "from-yellow-500 to-orange-500",
-    logo: "https://images.unsplash.com/photo-1632342664765-b067a9e89a44?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb25nb2RiJTIwZGF0YWJhc2UlMjBpY29ufGVufDF8fHx8MTc3NTM1NjQyOXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-  },
-  {
-    name: "Mobile Development",
-    level: 60,
-    icon: Smartphone,
-    color: "from-indigo-500 to-purple-500",
-    logo: "https://images.unsplash.com/photo-1633250391894-397930e3f5f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2JpbGUlMjBhcHAlMjBkZXZlbG9wbWVudHxlbnwxfHx8fDE3NzUyNjk2NjB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+    id: 4,
+    step: "04",
+    badge: "Foundational Education & Co-Curricular",
+    title: "Lyceum International School",
+    organization: "School",
+    period: "Up to 2020",
+    description:
+      "Completed Ordinary Level examination with distinction. Actively participated in school cadetting fostering discipline and leadership, and performed as an instrumentalist in the Eastern Music Band.",
+    icon: Building2,
+    tags: ["Ordinary Level Examination", "Cadetting & Leadership", "Eastern Music Band"],
   },
 ];
 
-const timeline = [
-  {
-    type: "work",
-    title: "Full Stack Developer",
-    period: "2023 - Present",
-    description: "Leading development of enterprise web applications and mentoring junior developers.",
-    icon: Briefcase,
-  },
-  {
-    type: "university",
-    title: "BSc (Hons) in IT Specialising in Artificial Intelligence",
-    organization: "SLIIT",
-    period: "2024 - 2028",
-    description: "An undergraduate at Sri Lanka Institute of Information Technology specializing in Artificial Intelligence, with a strong focus on developing intelligent systems and data-driven solutions.",
-    icon:GraduationCap,
-  },
-  {
-    type: "education",
-    title: "Royal College",
-    organization: "School",
-    period: "2020-2023",
-    description: "Completed my Advanced Level studies at Royal College Colombo in the Mathematics stream, achieving BCC results.",
-    icon:Briefcase,
-  },
-]
 export function About() {
+  const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlay, setIsAutoPlay] = useState(true);
+
+  // Auto sliding timer (changes every 5 seconds)
+  useEffect(() => {
+    if (!isAutoPlay) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % timelineSlides.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isAutoPlay]);
+
+  const filteredSkills =
+    activeCategory === "All"
+      ? skillsList
+      : skillsList.filter((s) => s.category === activeCategory);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % timelineSlides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + timelineSlides.length) % timelineSlides.length);
+  };
+
   return (
-    <div className="min-h-screen pt-24 pb-16 portfolio-page-surface">
+    <div className="min-h-screen pt-24 pb-20 portfolio-page-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-16 md:mb-20"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
-            About <span className="text-violet-500">Me</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#b783f5]/20 bg-[#b783f5]/5 text-[#b783f5] text-xs font-semibold tracking-[0.25em] uppercase mb-4 backdrop-blur-sm">
+            <Sparkles size={13} className="text-[#b783f5]" />
+            About Me
+          </div>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.03em] mb-4 text-white">
+            Discover My <span className="font-semibold text-white">Story<span className="text-[#b783f5]">.</span></span>
           </h1>
-          <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg text-white/50 max-w-2xl mx-auto leading-relaxed">
             Get to know more about my journey, skills, and experience
           </p>
         </motion.div>
@@ -114,192 +174,403 @@ export function About() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="grid md:grid-cols-2 gap-12 items-center mb-24"
+          className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center mb-28"
         >
-          {/* Profile Image */}
+          {/* Profile Image with subtle organic backdrop */}
           <motion.div
-            whileHover={{ scale: 1.01 }}
+            whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.3 }}
-            className="relative group mx-auto md:mx-0 w-full max-w-lg lg:max-w-xl"
+            className="relative mx-auto md:mx-0 w-full max-w-lg lg:max-w-xl flex justify-center items-center"
           >
-            <div className="portfolio-card-dark overflow-hidden rounded-2xl">
-              <div className="relative aspect-video w-full">
-                <ImageWithFallback
-                  src={profilePic}
-                  alt="Manith Gamage"
-                  width={640}
-                  height={800}
-                  className="absolute inset-0 h-full w-full object-cover object-[50%_20%]"
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0b0e14]/90 via-transparent to-transparent" />
-              </div>
-            </div>
+            {/* Ambient decorative glow */}
+            <div className="absolute -inset-4 bg-gradient-to-tr from-[#b783f5]/15 via-transparent to-transparent rounded-full blur-2xl pointer-events-none" />
+
+            <ImageWithFallback
+              src={aboutMeImg}
+              alt="Manith Gamage"
+              className="relative z-10 w-full max-h-[490px] object-contain drop-shadow-[0_12px_35px_rgba(183,131,245,0.22)]"
+            />
           </motion.div>
 
-          {/* Bio */}
-          <div className="space-y-6 text-left">
-            <h2 className="text-3xl font-bold text-white">Hello! I&apos;m Manith Gamage</h2>
-            <div className="space-y-4 text-slate-400 leading-relaxed">
-              <p>
-               I’m a passionate full-stack developer with over 3 years of experience building modern web applications, 
-               currently pursuing my undergraduate studies at Sri Lanka Institute of Information Technology after 
-               completing my Advanced Level education at Royal College Colombo in the Mathematics stream.
-              </p>
-              <p>
-                I specialize in the MERN stack (MongoDB, Express.js, React, Node.js) and backend Java development, with 
-                strong experience in TypeScript, Next.js, and cloud technologies, and I am also an AI & ML enthusiast with a 
-                keen interest in developing intelligent, data-driven systems.
-              </p>
-              <p>
-                My journey in software development began with curiosity about how websites work, which quickly grew into 
-                a passion for solving complex problems through clean, maintainable code and creating user experiences that 
-                truly stand out.
+          {/* Bio & Introduction */}
+          <div className="space-y-7 text-left">
+            {/* Fancy Greeting Badge with Nine-Frame Wave Animation */}
+            <div className="inline-flex items-center gap-3.5 px-4 py-2 rounded-2xl bg-[#1e1e1e]/90 border border-white/10 shadow-lg shadow-black/40 backdrop-blur-md">
+              <div className="relative w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-[#b783f5]/10 border border-[#b783f5]/30 flex-shrink-0">
+                <img
+                  src={waveAnimation}
+                  alt="Friendly wave"
+                  className="w-full h-full object-cover scale-110"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs uppercase tracking-[0.2em] text-[#b783f5] font-semibold">
+                  Hello There!
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#b783f5] animate-ping" />
+              </div>
+            </div>
 
-                I strongly believe in software engineering best practices such as test-driven development, continuous 
-                integration, and agile methodologies, and I enjoy mentoring aspiring developers while contributing to
-                meaningful projects.
+            {/* Name Heading matching Home page styling */}
+            <div>
+              <h2 className="text-3xl sm:text-4xl lg:text-[42px] leading-[1.1] font-light text-white tracking-[-0.03em]">
+                I&apos;m{" "}
+                <span className="font-semibold text-white">
+                  Manith Gamage<span className="text-[#b783f5]">.</span>
+                </span>
+              </h2>
+
+              {/* Accent divider matching Home role indicator */}
+              <div className="mt-4 flex items-center gap-3">
+                <div className="w-8 h-[2px] bg-[#b783f5]" />
+                <p className="text-[#b783f5] text-xs sm:text-sm uppercase tracking-[0.2em] font-medium">
+                  Software Engineer & AI Enthusiast
+                </p>
+              </div>
+            </div>
+
+            {/* Narrative text styled like home page typography */}
+            <div className="text-white/60 text-sm sm:text-base leading-relaxed sm:leading-8 space-y-4">
+              <p>
+                I&apos;m an AI-specializing undergraduate at{" "}
+                <span className="text-white font-medium">SLIIT</span> and currently a{" "}
+                <span className="text-white font-medium">Software Engineering Intern</span> at Airport and Aviation Services (Sri Lanka) (Pvt) Ltd.
               </p>
               <p>
-                Outside of coding, I spend time exploring new technologies, learning emerging trends in AI and software engineering, and 
-                engaging in activities like tech communities, listening to music and outdoor activities like playing badminton and cricket.
+                I&apos;m passionate about building modern web and mobile applications integrated with AI. I&apos;m continuously expanding my expertise in Full-Stack Development, LLM Fine-Tuning, LangChain, LLM Evaluation, and emerging AI technologies, with a strong focus on building intelligent and impactful solutions.
               </p>
             </div>
 
-            <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-4">
+            {/* Focus Pills matching Home page style */}
+            <div className="flex flex-wrap items-center gap-2.5 pt-1 text-xs text-white/50">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/5">
+                <BrainCircuit size={13} className="text-[#b783f5]" /> Full-Stack & AI
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/5">
+                <Bot size={13} className="text-[#b783f5]" /> LLMs & LangChain
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/5">
+                <Terminal size={13} className="text-[#b783f5]" /> Web & Mobile Apps
+              </span>
+            </div>
+
+            {/* Stat counters */}
+            <div className="grid grid-cols-2 gap-4 pt-2">
               <motion.div
                 whileHover={{ scale: 1.03 }}
-                className="portfolio-card-dark text-center p-4 sm:p-5 transition-all"
+                className="portfolio-card-dark text-center p-5 transition-all border border-white/5"
               >
-                <div className="text-2xl font-bold text-blue-500">3+</div>
-                <div className="text-xs sm:text-sm text-slate-300 mt-1">Years</div>
+                <div className="text-3xl font-bold text-[#b783f5]">3+</div>
+                <div className="text-xs sm:text-sm text-slate-300 mt-1 uppercase tracking-wider">Years Experience</div>
               </motion.div>
               <motion.div
                 whileHover={{ scale: 1.03 }}
-                className="portfolio-card-dark text-center p-4 sm:p-5 transition-all"
+                className="portfolio-card-dark text-center p-5 transition-all border border-white/5"
               >
-                <div className="text-2xl font-bold text-fuchsia-400">10+</div>
-                <div className="text-xs sm:text-sm text-slate-300 mt-1">Projects</div>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                className="portfolio-card-dark text-center p-4 sm:p-5 transition-all"
-              >
-                <div className="text-2xl font-bold text-pink-500">15+</div>
-                <div className="text-xs sm:text-sm text-slate-300 mt-1">Clients</div>
+                <div className="text-3xl font-bold text-[#b783f5]">10+</div>
+                <div className="text-xs sm:text-sm text-slate-300 mt-1 uppercase tracking-wider">Completed Projects</div>
               </motion.div>
             </div>
           </div>
         </motion.div>
 
-        {/* Skills Section */}
+        {/* Technical Skills Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="mb-24"
+          className="mb-32"
         >
-          <h2 className="text-3xl font-bold text-center mb-12 text-white">
-            Technical <span className="portfolio-gradient-text">Skills</span>
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {skills.map((skill, index) => {
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              const Icon = skill.icon;
-              return (
-                <motion.div
-                  key={skill.name}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <Card className="p-6 portfolio-card-dark border-white/[0.08] hover:border-white/15 transition-all group">
-                    <div className="flex items-center gap-4 mb-4">
-
-                      <motion.div
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0"
-                      >
-                        <ImageWithFallback
-                          src={skill.logo}
-                          alt={skill.name}
-                          className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                        />
-                        <div className={`absolute inset-0 bg-gradient-to-br ${skill.color} opacity-30`} />
-                      </motion.div>
-
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-semibold text-white text-lg">{skill.name}</span>
-                          <span className="text-sm text-gray-400">{skill.level}%</span>
-                        </div>
-                        <Progress value={skill.level} className="h-2" />
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              );
-            })}
+          {/* Section Heading */}
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-white/10 bg-white/5 text-[#b783f5] text-xs font-semibold tracking-[0.2em] uppercase mb-3">
+              <Cpu size={13} />
+              Core Competencies
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-white tracking-[-0.03em]">
+              Technical <span className="font-semibold text-white">Skills<span className="text-[#b783f5]">.</span></span>
+            </h2>
+            <p className="text-sm sm:text-base text-white/50 max-w-xl mx-auto mt-3">
+              Modern programming languages, enterprise frameworks, AI orchestration, and database technologies.
+            </p>
           </div>
-        </motion.div>
 
+          {/* Interactive Category Filter Pills */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+            {skillCategories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                type="button"
+                className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 ${
+                  activeCategory === cat
+                    ? "bg-[#b783f5] text-white shadow-lg shadow-[#b783f5]/25 scale-105"
+                    : "bg-[#1e1e1e] text-white/60 hover:text-white hover:bg-[#252525] border border-white/5"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <h2 className="text-3xl font-bold text-center mb-12 text-white">
-            Experience & <span className="portfolio-gradient-text">Education</span>
-          </h2>
-          <div className="relative">
-
-            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500" />
-
-            <div className="space-y-12">
-              {timeline.map((item, index) => {
-                const Icon = item.icon;
-                const isLeft = index % 2 === 0;
+          {/* Dynamic Motion Graphic Skill Cards */}
+          <motion.div
+            layout
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5 sm:gap-4"
+          >
+            <AnimatePresence mode="popLayout">
+              {filteredSkills.map((skill, index) => {
                 return (
                   <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className={`relative flex items-center ${isLeft ? "md:flex-row" : "md:flex-row-reverse"
-                      }`}
+                    key={skill.name}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9, y: 15 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                    transition={{ duration: 0.35, delay: index * 0.02 }}
+                    whileHover={{
+                      scale: 1.04,
+                      y: -4,
+                      transition: { duration: 0.2 },
+                    }}
+                    className="group relative p-4 sm:p-5 rounded-2xl bg-[#181818]/90 border border-white/[0.07] hover:border-[#b783f5]/40 hover:bg-[#1f1f1f] shadow-lg shadow-black/40 backdrop-blur-sm transition-colors overflow-hidden"
                   >
-                    {/* Content */}
-                    <div className={`w-full md:w-5/12 ${isLeft ? "md:text-right md:pr-12" : "md:pl-12"} pl-20 md:pl-0`}>
-                      <Card className="p-6 portfolio-card-dark border-white/[0.08] hover:border-white/15 transition-all hover:shadow-lg hover:shadow-violet-500/10">
-                        <div className={`flex items-start gap-4 ${isLeft ? "md:flex-row-reverse" : ""}`}>
-                          <div className={`p-3 rounded-lg bg-gradient-to-r ${item.type === "work" ? "from-blue-500 to-cyan-500" :
-                            item.type === "education" ? "from-purple-500 to-pink-500" :
-                              "from-yellow-500 to-orange-500"
-                            }`}>
-                            <Icon className="w-6 h-6 text-white" />
-                          </div>
-                          <div className={isLeft ? "md:text-right" : ""}>
-                            <h3 className="text-xl font-bold mb-1 text-white">{item.title}</h3>
-                            <p className="text-blue-400 font-medium mb-2">{item.organization}</p>
-                            <p className="text-sm text-gray-400 mb-3">{item.period}</p>
-                            <p className="text-gray-300 text-sm">{item.description}</p>
-                          </div>
-                        </div>
-                      </Card>
+                    {/* Subtle Corner Glow on Hover */}
+                    <div className="absolute -top-10 -right-10 w-24 h-24 bg-[#b783f5]/0 group-hover:bg-[#b783f5]/10 rounded-full blur-xl transition-all duration-500 pointer-events-none" />
+
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-[#b783f5] group-hover:text-white group-hover:bg-[#b783f5] group-hover:shadow-[0_0_15px_rgba(183,131,245,0.5)] transition-all duration-300">
+                        {skill.iconType === "ai" ? (
+                          <BrainCircuit size={16} />
+                        ) : skill.iconType === "db" ? (
+                          <Database size={16} />
+                        ) : skill.iconType === "cloud" ? (
+                          <Cloud size={16} />
+                        ) : skill.iconType === "mobile" ? (
+                          <Globe size={16} />
+                        ) : (
+                          <Terminal size={16} />
+                        )}
+                      </div>
+
+                      <span className="text-[10px] uppercase font-mono tracking-wider text-white/30 group-hover:text-[#b783f5] transition-colors">
+                        {skill.category}
+                      </span>
                     </div>
 
-                    {/* Timeline Node */}
-                    <div className="absolute left-8 md:left-1/2 w-4 h-4 bg-white rounded-full border-4 border-gray-900 transform -translate-x-1/2 z-10" />
+                    <h3 className="text-base sm:text-lg font-semibold text-white tracking-tight group-hover:text-white transition-colors">
+                      {skill.name}
+                    </h3>
+                    <p className="text-[11px] sm:text-xs text-white/45 mt-1 line-clamp-1">
+                      {skill.tag}
+                    </p>
+
+                    {/* Bottom Neon Accent Bar */}
+                    <div className="mt-3.5 h-[2px] w-full bg-white/[0.05] rounded-full overflow-hidden">
+                      <div className="h-full w-0 group-hover:w-full bg-gradient-to-r from-[#b783f5] to-fuchsia-400 transition-all duration-500 ease-out" />
+                    </div>
                   </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </motion.div>
+        </motion.div>
+
+        {/* Experience & Education - Horizontal Hierarchy with Motion Graphic Slides */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="mb-16"
+        >
+          {/* Section Heading */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-white/10 bg-white/5 text-[#b783f5] text-xs font-semibold tracking-[0.2em] uppercase mb-3">
+              <Layers size={13} />
+              Career & Academic Pathway
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-light text-white tracking-[-0.03em]">
+              Experience & <span className="font-semibold text-white">Education<span className="text-[#b783f5]">.</span></span>
+            </h2>
+            <p className="text-sm sm:text-base text-white/50 max-w-xl mx-auto mt-3">
+              Horizontal interactive hierarchy showcasing my progression across industry roles and academia.
+            </p>
+          </div>
+
+          {/* Horizontal Stepper Hierarchy Bar */}
+          <div className="relative max-w-4xl mx-auto mb-10 px-4">
+            <div className="hidden sm:block absolute top-1/2 left-8 right-8 h-[2px] -translate-y-1/2 bg-white/10 z-0">
+              <motion.div
+                className="h-full bg-gradient-to-r from-[#b783f5] via-purple-500 to-[#b783f5]"
+                initial={false}
+                animate={{
+                  width: `${(currentSlide / (timelineSlides.length - 1)) * 100}%`,
+                }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+              />
+            </div>
+
+            <div className="relative z-10 flex items-center justify-between">
+              {timelineSlides.map((slide, idx) => {
+                const isCurrent = currentSlide === idx;
+                const isPassed = currentSlide >= idx;
+
+                return (
+                  <button
+                    key={slide.id}
+                    onClick={() => setCurrentSlide(idx)}
+                    type="button"
+                    className="flex flex-col items-center group cursor-pointer focus:outline-none"
+                  >
+                    <div
+                      className={`w-12 h-12 rounded-2xl flex items-center justify-center font-mono font-bold text-sm transition-all duration-300 border ${
+                        isCurrent
+                          ? "bg-[#b783f5] text-white border-[#b783f5] shadow-[0_0_25px_rgba(183,131,245,0.6)] scale-110"
+                          : isPassed
+                          ? "bg-[#252525] text-[#b783f5] border-[#b783f5]/50"
+                          : "bg-[#181818] text-white/40 border-white/10 group-hover:border-white/30"
+                      }`}
+                    >
+                      {slide.step}
+                    </div>
+                    <span
+                      className={`text-xs mt-2.5 font-medium tracking-wider uppercase transition-colors hidden sm:block ${
+                        isCurrent ? "text-white font-semibold" : "text-white/40 group-hover:text-white/70"
+                      }`}
+                    >
+                      {slide.badge}
+                    </span>
+                  </button>
                 );
               })}
             </div>
           </div>
+
+          {/* Interactive Slide Viewer */}
+          <div className="relative max-w-4xl mx-auto">
+            {/* Slide Navigation Buttons */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-white/40 uppercase tracking-[0.2em] font-mono">
+                  Slide {currentSlide + 1} of {timelineSlides.length}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsAutoPlay(!isAutoPlay)}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono border border-white/10 bg-white/5 text-white/60 hover:text-white cursor-pointer"
+                  title={isAutoPlay ? "Pause Auto-Slide" : "Resume Auto-Slide"}
+                >
+                  {isAutoPlay ? (
+                    <>
+                      <Pause size={10} className="text-[#b783f5]" /> Auto (5s)
+                    </>
+                  ) : (
+                    <>
+                      <Play size={10} className="text-[#b783f5]" /> Paused
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={prevSlide}
+                  type="button"
+                  aria-label="Previous slide"
+                  className="p-2.5 rounded-xl border border-white/10 bg-[#1c1c1c] text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  type="button"
+                  aria-label="Next slide"
+                  className="p-2.5 rounded-xl border border-white/10 bg-[#1c1c1c] text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+            </div>
+
+            {/* Slide Card Container with Motion Transition */}
+            <div className="relative min-h-[300px] overflow-hidden rounded-3xl bg-[#181818]/90 border border-white/[0.08] backdrop-blur-xl p-6 sm:p-10 shadow-2xl shadow-black/80">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentSlide}
+                  initial={{ opacity: 0, x: 50, filter: "blur(6px)" }}
+                  animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                  exit={{ opacity: 0, x: -50, filter: "blur(6px)" }}
+                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative z-10 flex flex-col justify-between h-full"
+                >
+                  <div>
+                    {/* Top Row: Badge + Period */}
+                    <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#b783f5]/10 border border-[#b783f5]/25 text-[#b783f5] text-xs font-semibold uppercase tracking-wider">
+                        <Flame size={12} />
+                        {timelineSlides[currentSlide].badge}
+                      </span>
+
+                      <span className="text-xs sm:text-sm font-mono text-white/60 bg-white/[0.04] px-3.5 py-1 rounded-full border border-white/5">
+                        {timelineSlides[currentSlide].period}
+                      </span>
+                    </div>
+
+                    {/* Title & Organization */}
+                    <h3 className="text-2xl sm:text-3xl lg:text-4xl font-light text-white tracking-tight mb-2">
+                      {timelineSlides[currentSlide].title}
+                    </h3>
+
+                    {timelineSlides[currentSlide].organization && (
+                      <p className="text-sm sm:text-base text-[#b783f5] font-medium tracking-wide mb-5">
+                        {timelineSlides[currentSlide].organization}
+                      </p>
+                    )}
+
+                    {/* Description */}
+                    <p className="text-sm sm:text-base text-white/65 leading-relaxed max-w-3xl mb-8">
+                      {timelineSlides[currentSlide].description}
+                    </p>
+                  </div>
+
+                  {/* Highlights / Tags */}
+                  <div className="pt-6 border-t border-white/5 flex flex-wrap items-center gap-2 sm:gap-3">
+                    {timelineSlides[currentSlide].tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/5 text-xs text-white/70"
+                      >
+                        <CheckCircle2 size={13} className="text-[#b783f5]" />
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Ambient Background Decorative Glow */}
+              <div className="absolute -bottom-16 -right-16 w-60 h-60 bg-[#b783f5]/[0.06] blur-[90px] rounded-full pointer-events-none" />
+            </div>
+
+            {/* Slide Indicator Dots */}
+            <div className="flex items-center justify-center gap-2 mt-6">
+              {timelineSlides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentSlide(i)}
+                  type="button"
+                  aria-label={`Go to slide ${i + 1}`}
+                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                    currentSlide === i ? "w-8 bg-[#b783f5]" : "w-2 bg-white/20 hover:bg-white/40"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
         </motion.div>
+
       </div>
     </div>
   );
