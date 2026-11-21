@@ -52,7 +52,7 @@ const skillsList: SkillItem[] = [
   { name: "YOLOv8", category: "AI & ML", tag: "Real-Time Computer Vision", iconType: "ai" },
 ];
 
-const skillCategories = ["All", "Frontend", "Backend", "AI & ML", "Database & Cloud"] as const;
+const skillCategories = ["Frontend", "Backend", "AI & ML", "Database & Cloud"] as const;
 
 interface TimelineSlide {
   id: number;
@@ -118,7 +118,7 @@ const timelineSlides: TimelineSlide[] = [
 ];
 
 export function About() {
-  const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [activeCategory, setActiveCategory] = useState<string>("Frontend");
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
 
@@ -131,10 +131,7 @@ export function About() {
     return () => clearInterval(interval);
   }, [isAutoPlay]);
 
-  const filteredSkills =
-    activeCategory === "All"
-      ? skillsList
-      : skillsList.filter((s) => s.category === activeCategory);
+  const filteredSkills = skillsList.filter((s) => s.category === activeCategory);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % timelineSlides.length);
