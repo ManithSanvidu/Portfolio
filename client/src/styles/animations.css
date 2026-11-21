@@ -247,6 +247,123 @@
 .delay-600 { animation-delay: 600ms; }
 
 /* ==========================================================================
+   Scroll-Triggered Section Transitions & Keyframe Animations
+   ========================================================================== */
+
+/* Section Slide & Fade (opacity 0 to 1, translateY 60px to 0, 0.9s) */
+.section-reveal {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.section-reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 1. Animated Section Dividers */
+.section-divider-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.section-divider-line {
+  height: 1.5px;
+  width: 0;
+  max-width: 280px;
+  opacity: 0.8;
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: width;
+}
+
+.section-divider-line-left {
+  transform-origin: right center;
+}
+
+.section-divider-line-right {
+  transform-origin: left center;
+}
+
+.section-divider-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  margin: 0 14px;
+  transform: scale(0);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s;
+  will-change: transform;
+}
+
+.section-divider-track.in-view .section-divider-line {
+  width: clamp(80px, 22vw, 280px);
+}
+
+.section-divider-track.in-view .section-divider-dot {
+  transform: scale(1);
+}
+
+/* 2. Split Text Masked Reveal (After Effects style) */
+.split-text-accent-bar {
+  width: 0;
+  height: 3px;
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.split-text-container.in-view .split-text-accent-bar {
+  width: 64px;
+}
+
+.split-text-word {
+  opacity: 0;
+  transform: translateY(115%) rotate(3deg);
+  filter: blur(8px);
+  transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--stagger-delay, 0ms);
+}
+
+.split-text-container.in-view .split-text-word {
+  opacity: 1;
+  transform: translateY(0) rotate(0deg);
+  filter: blur(0px);
+}
+
+/* 3. Staggered Content Elements (Paragraphs, Cards, Badges, Buttons) */
+/* Stagger 140ms, start ~500ms after heading */
+.stagger-group {
+  opacity: 1;
+}
+
+.stagger-child {
+  opacity: 0;
+  transform: translateY(24px) scale(0.96);
+  filter: blur(4px);
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(500ms + var(--i, 0) * 140ms);
+  will-change: transform, opacity, filter;
+}
+
+.in-view .stagger-child,
+.stagger-group.in-view .stagger-child {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0px);
+}
+
+/* Immediate appearance for Home */
+.no-delay {
+  transition-delay: 0ms !important;
+}
+
+/* ==========================================================================
    Accessibility: Prefers-Reduced-Motion
    Strict compliance: disables heavy motion, transforms, and loops.
    ========================================================================== */
@@ -259,6 +376,29 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .section-reveal,
+  .section-divider-line,
+  .section-divider-dot,
+  .split-text-accent-bar,
+  .split-text-word,
+  .stagger-child {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    width: auto !important;
+    transition: none !important;
+  }
+
+  .section-divider-line {
+    width: clamp(80px, 22vw, 280px) !important;
+  }
+  .section-divider-dot {
+    transform: scale(1) !important;
+  }
+  .split-text-accent-bar {
+    width: 64px !important;
   }
 
   .animate-float-subtle,
