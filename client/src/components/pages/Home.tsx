@@ -74,7 +74,7 @@ export function Home() {
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-[#191919] via-[#111111] to-[#171717]" />
 
-        <div className="absolute left-[35%] top-[20%] w-[350px] h-[350px] bg-purple-600/[0.04] blur-[130px] rounded-full" />
+        <div className="absolute left-[35%] top-[20%] w-[350px] h-[350px] bg-purple-600/[0.04] blur-[130px] rounded-full animate-pulse-glow" />
       </div>
 
       {/* Header */}
@@ -82,7 +82,7 @@ export function Home() {
 
         <a
           href="#home"
-          className="text-2xl font-bold tracking-tight text-[#b783f5]"
+          className="text-2xl font-bold tracking-tight text-[#b783f5] btn-press"
         >
           manith<span className="text-white">.</span>
         </a>
@@ -91,7 +91,7 @@ export function Home() {
 
         <a
           href="#contact"
-          className="flex items-center gap-2 text-sm text-white hover:text-[#bb87f7] transition-colors"
+          className="flex items-center gap-2 text-sm text-white hover:text-[#bb87f7] transition-colors link-hover-draw btn-press"
         >
           Let's Talk
           <ArrowUpRight size={16} />
@@ -184,11 +184,11 @@ export function Home() {
 
               {/* Animated Role */}
               <div className="mt-9 flex items-center gap-3">
-                <div className="w-8 h-[2px] bg-[#b783f5]" />
+                <div className="w-8 h-[2px] bg-[#b783f5] animate-accent-draw" />
 
                 <p className="text-[#b783f5] text-sm md:text-base font-medium tracking-wide min-h-6">
                   {displayText}
-                  <span className="animate-pulse">|</span>
+                  <span className="inline-block animate-blink-caret ml-0.5 text-white">|</span>
                 </p>
               </div>
 
@@ -213,7 +213,7 @@ export function Home() {
 
                 <a
                   href="#contact"
-                  className="group flex items-center gap-3 text-sm font-semibold text-white hover:text-[#b783f5] transition-colors"
+                  className="group flex items-center gap-3 text-sm font-semibold text-white hover:text-[#b783f5] transition-colors btn-press"
                 >
                   Let's get in touch
 
@@ -226,7 +226,7 @@ export function Home() {
                 <a
                   href="/Manith_Gamage_Resume.pdf"
                   download="Manith_Gamage_Resume.pdf"
-                  className="flex items-center gap-2 text-sm text-white/55 hover:text-white transition-colors"
+                  className="flex items-center gap-2 text-sm text-white/55 hover:text-white transition-colors btn-press"
                 >
                   <Download size={15} />
                   Download Resume
@@ -243,7 +243,7 @@ export function Home() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="text-white/40 hover:text-[#b783f5] transition-colors duration-300"
+                    className="text-white/40 hover:text-[#b783f5] transition-colors duration-300 btn-press"
                   >
                     <Icon size={19} />
                   </a>

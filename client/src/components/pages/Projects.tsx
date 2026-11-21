@@ -203,7 +203,7 @@ export function Projects() {
                 key={category}
                 type="button"
                 onClick={() => setSelectedCategory(category)}
-                className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 cursor-pointer ${
+                className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 cursor-pointer btn-press ${
                   selectedCategory === category
                     ? "bg-[#b783f5] text-white shadow-lg shadow-[#b783f5]/25 scale-105"
                     : "bg-[#1e1e1e] text-white/60 hover:text-white hover:bg-[#252525] border border-white/5"
@@ -343,11 +343,11 @@ export function Projects() {
                       }`}
                     >
                       {/* Image Preview Banner */}
-                      <div className="relative h-44 sm:h-52 w-full overflow-hidden bg-black/60">
+                      <div className="relative h-44 sm:h-52 w-full overflow-hidden bg-black/60 group/img">
                         <ImageWithFallback
                           src={project.image}
                           alt={project.title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover/img:scale-105 will-change-transform"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#191919] via-transparent to-black/20" />
 

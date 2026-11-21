@@ -264,7 +264,7 @@ export function Contact() {
                 <Button
                   type="submit"
                   disabled={isSubmitting || isSubmitted}
-                  className="w-full portfolio-gradient-btn rounded-xl py-6 text-white font-semibold border-0 hover:opacity-95 transition-all shadow-lg shadow-purple-500/20"
+                  className="w-full portfolio-gradient-btn rounded-xl py-6 text-white font-semibold border-0 hover:opacity-95 transition-all shadow-lg shadow-purple-500/20 shimmer-btn btn-press"
                 >
                   {isSubmitting ? (
                     <>
