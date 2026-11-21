@@ -1,0 +1,277 @@
+/**
+ * Centralized Animation System
+ * Tokens, keyframes, utility classes, and accessibility rules.
+ */
+
+:root {
+  /* Motion tokens */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  --dur-fast: 200ms;
+  --dur-base: 500ms;
+  --dur-slow: 800ms;
+  --dur-ambient: 8s;
+
+  --stagger: 80ms;
+}
+
+/* ==========================================================================
+   Keyframes (strictly transform & opacity to avoid layout thrash)
+   ========================================================================== */
+
+@keyframes anim-fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes anim-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes anim-slide-in-left {
+  0% {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes anim-slide-in-right {
+  0% {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes anim-scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes anim-float-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes anim-pulse-glow {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes anim-blink-caret {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes anim-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes anim-accent-draw {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+.animate-fade-up {
+  animation: anim-fade-up var(--dur-base) var(--ease-out) forwards;
+}
+
+.animate-fade-in {
+  animation: anim-fade-in var(--dur-base) var(--ease-out) forwards;
+}
+
+.animate-slide-in-left {
+  animation: anim-slide-in-left var(--dur-base) var(--ease-out) forwards;
+}
+
+.animate-slide-in-right {
+  animation: anim-slide-in-right var(--dur-base) var(--ease-out) forwards;
+}
+
+.animate-scale-in {
+  animation: anim-scale-in var(--dur-base) var(--ease-out) forwards;
+}
+
+.animate-float-subtle {
+  animation: anim-float-subtle 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: anim-pulse-glow var(--dur-ambient) ease-in-out infinite;
+}
+
+.animate-blink-caret {
+  animation: anim-blink-caret 1s steps(1) infinite;
+}
+
+.animate-accent-draw {
+  transform-origin: left;
+  animation: anim-accent-draw var(--dur-slow) var(--ease-out) forwards;
+}
+
+/* Micro-interaction utilities */
+.hover-lift {
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+  will-change: transform;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
+.hover-lift:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+.hover-zoom-img {
+  transition: transform var(--dur-base) var(--ease-out);
+  will-change: transform;
+}
+.group:hover .hover-zoom-img {
+  transform: scale(1.05);
+}
+
+.btn-press {
+  transition: transform var(--dur-fast) var(--ease-out), filter var(--dur-fast) var(--ease-out);
+  will-change: transform;
+}
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Shimmer overlay for primary CTA buttons */
+.shimmer-btn {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-btn::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.15) 35%,
+    transparent 50%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s var(--ease-out);
+  pointer-events: none;
+}
+.shimmer-btn:hover::after {
+  transform: translateX(100%);
+}
+
+/* Link underline animated slide */
+.link-hover-draw {
+  position: relative;
+  display: inline-block;
+}
+.link-hover-draw::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background-color: #b783f5;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.link-hover-draw:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Stagger delay utility classes */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+
+/* ==========================================================================
+   Accessibility: Prefers-Reduced-Motion
+   Strict compliance: disables heavy motion, transforms, and loops.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-float-subtle,
+  .animate-pulse-glow,
+  .animate-blink-caret,
+  .shimmer-btn::after {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .hover-lift:hover,
+  .hover-zoom-img:hover,
+  .btn-press:active {
+    transform: none !important;
+  }
+}
