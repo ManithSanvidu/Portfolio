@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 
 interface UseInViewOptions {
   threshold?: number;
@@ -8,22 +8,20 @@ interface UseInViewOptions {
 
 export function useInView<T extends HTMLElement = HTMLDivElement>(
   options: UseInViewOptions = {}
-) {
-  const { threshold = 0.15, rootMargin = "0px", triggerOnce = true } = options;
+): [RefObject<T | null>, boolean] {
+  const { threshold = 0.25, rootMargin = "0px", triggerOnce = true } = options;
   const ref = useRef<T | null>(null);
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
+    const el = ref.current;
+    if (!el) return;
 
-    // Check if user prefers reduced motion
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
+    // Check prefers-reduced-motion: if reduced, show immediately
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) {
       setIsInView(true);
+      el.classList.add("in-view");
       return;
     }
 
@@ -31,22 +29,24 @@ export function useInView<T extends HTMLElement = HTMLDivElement>(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsInView(true);
+          el.classList.add("in-view");
           if (triggerOnce) {
-            observer.unobserve(element);
+            observer.unobserve(el);
           }
         } else if (!triggerOnce) {
           setIsInView(false);
+          el.classList.remove("in-view");
         }
       },
       { threshold, rootMargin }
     );
 
-    observer.observe(element);
+    observer.observe(el);
 
     return () => {
       observer.disconnect();
     };
   }, [threshold, rootMargin, triggerOnce]);
 
-  return { ref, isInView };
+  return [ref, isInView];
 }
