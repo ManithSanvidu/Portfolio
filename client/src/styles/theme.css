@@ -163,10 +163,16 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    font-family: var(--font-sans);
   }
 
   .dark body {
     @apply bg-transparent text-slate-50 font-sans antialiased;
+    font-family: var(--font-sans);
+  }
+
+  *, *::before, *::after {
+    font-family: inherit;
   }
 
   #root {
