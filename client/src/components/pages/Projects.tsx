@@ -7,7 +7,6 @@ import {
   Filter,
   Search,
   X,
-  Sparkles,
   ChevronLeft,
   ChevronRight,
   Eye,
@@ -159,7 +158,6 @@ export function Projects() {
           className="text-center mb-12 md:mb-16"
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#b783f5]/20 bg-[#b783f5]/5 text-[#b783f5] text-xs font-semibold tracking-[0.25em] uppercase mb-4 backdrop-blur-sm">
-            <Sparkles size={13} className="text-[#b783f5]" />
             Selected Works
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.03em] mb-4 text-white">

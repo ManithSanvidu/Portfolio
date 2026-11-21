@@ -6,7 +6,6 @@ import {
   Github,
   Linkedin,
   CheckCircle,
-  Sparkles,
   ArrowUpRight,
 } from "lucide-react";
 import { Button } from "../ui/button";
@@ -133,7 +132,6 @@ export function Contact() {
           className="text-center mb-10 md:mb-14"
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#b783f5]/20 bg-[#b783f5]/5 text-[#b783f5] text-xs font-semibold tracking-[0.25em] uppercase mb-4 backdrop-blur-sm">
-            <Sparkles size={13} className="text-[#b783f5]" />
             Let's Connect
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.03em] mb-4 text-white">
@@ -302,9 +300,6 @@ export function Contact() {
             className="lg:col-span-5 space-y-6"
           >
             <Card className="p-8 portfolio-card-dark border-white/[0.08] rounded-3xl bg-gradient-to-br from-white/[0.05] via-transparent to-purple-500/5">
-              <div className="w-12 h-12 rounded-2xl bg-[#b783f5]/10 border border-[#b783f5]/20 flex items-center justify-center mb-5 text-[#b783f5]">
-                <Sparkles className="w-6 h-6" />
-              </div>
               <h3 className="text-xl font-bold text-white mb-2">
                 Available for New Opportunities
               </h3>
@@ -331,7 +326,7 @@ export function Contact() {
                     Connect Directly
                   </p>
                   <p className="text-base font-semibold text-white">
-                    let's work together!
+                    Let's work together!
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -376,7 +371,7 @@ export function Contact() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 lg:gap-24">
               {/* Left Column: Start a Project */}
               <div className="flex flex-col">
-                <p className="text-white/50 text-xs sm:text-sm font-light tracking-wide mb-3 sm:mb-4">
+                <p className="text-white/50 text-xs sm:text-sm font-normal tracking-wide mb-3 sm:mb-4">
                   Want to work together?
                 </p>
 
@@ -386,7 +381,7 @@ export function Contact() {
                     e.preventDefault();
                     document.getElementById("contact-form")?.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="group inline-flex items-center justify-between text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-tight pb-6 sm:pb-8 border-b border-white/15 hover:text-white/80 transition-colors"
+                  className="group inline-flex items-center justify-between text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.03em] text-white pb-6 sm:pb-8 border-b border-white/15 hover:text-white/80 transition-colors"
                 >
                   <span>Start a project</span>
                   <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 stroke-[1.2] text-white group-hover:translate-x-1.5 group-hover:-translate-y-1.5 transition-transform duration-300" />
@@ -394,12 +389,12 @@ export function Contact() {
 
                 {/* Sub details below divider */}
                 <div className="grid grid-cols-2 gap-6 pt-6 sm:pt-8">
-                  <div className="text-xs sm:text-sm text-white/50 font-light leading-relaxed">
-                    <p className="text-white/70">Available for Freelance</p>
+                  <div className="text-xs sm:text-sm text-white/50 font-normal leading-relaxed">
+                    <p className="text-white/80 font-medium">Available for Freelance</p>
                     <p>Portfolio 2026</p>
                   </div>
 
-                  <nav className="flex flex-col space-y-2.5 text-xs sm:text-sm font-light">
+                  <nav className="flex flex-col space-y-2.5 text-xs sm:text-sm font-normal">
                     <a
                       href="#home"
                       onClick={(e) => {
@@ -453,7 +448,7 @@ export function Contact() {
 
                 <a
                   href="mailto:manithsgamage@gmail.com"
-                  className="group inline-flex items-center justify-between text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-tight pb-6 sm:pb-8 border-b border-white/15 hover:text-white/80 transition-colors"
+                  className="group inline-flex items-center justify-between text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.03em] text-white pb-6 sm:pb-8 border-b border-white/15 hover:text-white/80 transition-colors"
                 >
                   <span>Email</span>
                   <ArrowUpRight className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 stroke-[1.2] text-white group-hover:translate-x-1.5 group-hover:-translate-y-1.5 transition-transform duration-300" />
@@ -461,8 +456,8 @@ export function Contact() {
 
                 {/* Sub details below divider */}
                 <div className="grid grid-cols-2 gap-6 pt-6 sm:pt-8">
-                  <div className="text-xs sm:text-sm text-white/50 font-light leading-relaxed">
-                    <p className="text-white/70">Don't Like Forms?</p>
+                  <div className="text-xs sm:text-sm text-white/50 font-normal leading-relaxed">
+                    <p className="text-white/80 font-medium">Don't Like Forms?</p>
                     <a
                       href="mailto:manithsgamage@gmail.com"
                       className="hover:text-white transition-colors text-white/60 underline underline-offset-4 decoration-white/20 hover:decoration-white"
@@ -471,7 +466,7 @@ export function Contact() {
                     </a>
                   </div>
 
-                  <div className="flex flex-col space-y-2.5 text-xs sm:text-sm font-light">
+                  <div className="flex flex-col space-y-2.5 text-xs sm:text-sm font-normal">
                     <a
                       href="https://github.com/ManithSanvidu"
                       target="_blank"
@@ -502,12 +497,12 @@ export function Contact() {
             </div>
 
             {/* Bottom Row Footer */}
-            <div className="mt-16 sm:mt-20 md:mt-24 pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-white/50 font-light">
+            <div className="mt-16 sm:mt-20 md:mt-24 pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-white/50 font-normal">
               <p>© All rights reserved – Manith Gamage</p>
               <button
                 type="button"
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                className="text-white/50 hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0 font-light"
+                className="text-white/50 hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0 font-normal"
               >
                 Back to Top
               </button>

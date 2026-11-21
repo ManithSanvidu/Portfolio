@@ -5,7 +5,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ExternalLink,
-  Sparkles,
   BookOpen,
 } from "lucide-react";
 import { Button } from "../ui/button";
@@ -142,7 +141,6 @@ export function Certifications() {
           className="text-center mb-10 md:mb-14"
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#b783f5]/20 bg-[#b783f5]/5 text-[#b783f5] text-xs font-semibold tracking-[0.25em] uppercase mb-4 backdrop-blur-sm">
-            <Sparkles size={13} className="text-[#b783f5]" />
             Accreditations & Badges
           </div>
 
