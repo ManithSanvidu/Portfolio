@@ -20,6 +20,7 @@ import {
   Play,
 } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
+import { SplitText } from "../ui/SplitText";
 import aboutMeImg from "../images/aboutme.png";
 import waveAnimation from "../images/Nine-Frame Friendly Wave Animation.gif";
 
@@ -146,22 +147,21 @@ export function About() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16 md:mb-20"
-        >
+        <div className="text-center mb-16 md:mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#b783f5]/20 bg-[#b783f5]/5 text-[#b783f5] text-xs font-semibold tracking-[0.25em] uppercase mb-4 backdrop-blur-sm">
             About Me
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.03em] mb-4 text-white">
-            Discover My <span className="font-semibold text-white">Story<span className="text-[#b783f5]">.</span></span>
-          </h1>
-          <p className="text-base sm:text-lg text-white/50 max-w-2xl mx-auto leading-relaxed">
+          <SplitText
+            text="Discover My Story."
+            as="h1"
+            className="text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.03em] mb-4 text-white justify-center flex flex-wrap"
+            highlightWords={["Story."]}
+            accentBar={false}
+          />
+          <p className="stagger-child text-base sm:text-lg text-white/50 max-w-2xl mx-auto leading-relaxed" style={{ "--i": 0 } as React.CSSProperties}>
             Get to know more about my journey, skills, and experience
           </p>
-        </motion.div>
+        </div>
 
         {/* Profile Section */}
         <motion.div

@@ -5,10 +5,34 @@ import { About } from "./About";
 import { Projects } from "./Projects";
 import { Certifications } from "./Certifications";
 import { Contact } from "./Contact";
+import { useInView } from "../../hooks/useInView";
 
 function scrollToId(id: string) {
   const el = document.getElementById(id);
   el?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function SectionWrapper({
+  id,
+  label,
+  children,
+}: {
+  id: string;
+  label: string;
+  children: React.ReactNode;
+}) {
+  const [ref] = useInView<HTMLElement>({ threshold: 0.15, triggerOnce: true });
+
+  return (
+    <section
+      id={id}
+      ref={ref}
+      className="relative min-h-[100dvh] snap-start snap-always scroll-mt-20 flex flex-col section-reveal"
+      aria-label={label}
+    >
+      {children}
+    </section>
+  );
 }
 
 export function PortfolioPage() {
@@ -35,45 +59,34 @@ export function PortfolioPage() {
 
   return (
     <>
+      {/* Home Section: Visible immediately on load, no delay */}
       <section
         id="home"
-        className="relative min-h-[100dvh] snap-start snap-always scroll-mt-20 flex flex-col"
+        className="relative min-h-[100dvh] snap-start snap-always scroll-mt-20 flex flex-col in-view"
         aria-label="Home"
       >
         <Home />
       </section>
 
-      <section
-        id="about"
-        className="relative min-h-[100dvh] snap-start snap-always scroll-mt-20 border-t border-white/5 flex flex-col"
-        aria-label="About"
-      >
+      {/* About Section: Scroll-triggered reveal */}
+      <SectionWrapper id="about" label="About">
         <About />
-      </section>
+      </SectionWrapper>
 
-      <section
-        id="projects"
-        className="relative min-h-[100dvh] snap-start snap-always scroll-mt-20 border-t border-white/5 flex flex-col"
-        aria-label="Projects"
-      >
+      {/* Projects Section: Scroll-triggered reveal */}
+      <SectionWrapper id="projects" label="Projects">
         <Projects />
-      </section>
+      </SectionWrapper>
 
-      <section
-        id="certifications"
-        className="relative min-h-[100dvh] snap-start snap-always scroll-mt-20 border-t border-white/5 flex flex-col"
-        aria-label="Certifications"
-      >
+      {/* Certifications Section: Scroll-triggered reveal */}
+      <SectionWrapper id="certifications" label="Certifications">
         <Certifications />
-      </section>
+      </SectionWrapper>
 
-      <section
-        id="contact"
-        className="relative min-h-[100dvh] snap-start snap-always scroll-mt-20 border-t border-white/5 flex flex-col"
-        aria-label="Contact"
-      >
+      {/* Contact Section: Scroll-triggered reveal */}
+      <SectionWrapper id="contact" label="Contact">
         <Contact />
-      </section>
+      </SectionWrapper>
     </>
   );
 }

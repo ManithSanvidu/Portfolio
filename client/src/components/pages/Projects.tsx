@@ -17,6 +17,7 @@ import {
 import { Card } from "../ui/card";
 import { Input } from "../ui/input";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
+import { SplitText } from "../ui/SplitText";
 import home from "../images/Home.jpg";
 import site from "../images/site.JPG";
 import football from "../images/football.JPG";
@@ -151,22 +152,21 @@ export function Projects() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header matching Home page */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12 md:mb-16"
-        >
+        <div className="text-center mb-12 md:mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#b783f5]/20 bg-[#b783f5]/5 text-[#b783f5] text-xs font-semibold tracking-[0.25em] uppercase mb-4 backdrop-blur-sm">
             Selected Works
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.03em] mb-4 text-white">
-            Featured <span className="font-semibold text-white">Projects<span className="text-[#b783f5]">.</span></span>
-          </h1>
-          <p className="text-base sm:text-lg text-white/50 max-w-2xl mx-auto leading-relaxed">
+          <SplitText
+            text="Featured Projects."
+            as="h1"
+            className="text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.03em] mb-4 text-white justify-center flex flex-wrap"
+            highlightWords={["Projects."]}
+            accentBar={false}
+          />
+          <p className="stagger-child text-base sm:text-lg text-white/50 max-w-2xl mx-auto leading-relaxed" style={{ "--i": 0 } as React.CSSProperties}>
             A curated collection of intelligent web applications, AI systems, and interactive digital solutions.
           </p>
-        </motion.div>
+        </div>
 
         {/* Filters & Centered Search Bar (NO VIEW SWITCHER) */}
         <motion.div

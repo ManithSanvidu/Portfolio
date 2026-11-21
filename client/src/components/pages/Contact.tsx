@@ -13,6 +13,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Card } from "../ui/card";
 import { toast } from "sonner";
+import { SplitText } from "../ui/SplitText";
 import manTypingHandsGif from "../images/man_typing_hands.gif";
 
 type FormData = {
@@ -125,26 +126,22 @@ export function Contact() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
 
         {/* 1. Header / Intro Above the Design Banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="text-center mb-10 md:mb-14"
-        >
+        <div className="text-center mb-10 md:mb-14">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#b783f5]/20 bg-[#b783f5]/5 text-[#b783f5] text-xs font-semibold tracking-[0.25em] uppercase mb-4 backdrop-blur-sm">
             Let's Connect
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.03em] mb-4 text-white">
-            Let's connect and build{" "}
-            <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-[#b783f5]">
-              something useful!
-            </span>
-          </h1>
-          <p className="text-base sm:text-lg text-white/50 max-w-2xl mx-auto leading-relaxed">
+          <SplitText
+            text="Let's connect and build something useful!"
+            as="h1"
+            className="text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.03em] mb-4 text-white justify-center flex flex-wrap"
+            highlightWords={["something", "useful!"]}
+            accentBar={false}
+          />
+          <p className="stagger-child text-base sm:text-lg text-white/50 max-w-2xl mx-auto leading-relaxed" style={{ "--i": 0 } as React.CSSProperties}>
             Have an ambitious project, bold idea, or innovative collaboration in mind?
             Reach out through the direct channels below or drop a message.
           </p>
-        </motion.div>
+        </div>
 
         {/* 2. Uploaded Design Showcase Banner */}
         <motion.div

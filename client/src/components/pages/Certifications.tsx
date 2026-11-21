@@ -8,6 +8,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { Button } from "../ui/button";
+import { SplitText } from "../ui/SplitText";
 
 // Import certificate images
 import python1 from "../images/python1.jfif";
@@ -134,29 +135,24 @@ export function Certifications() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-10 md:mb-14"
-        >
+        <div className="text-center mb-10 md:mb-14">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#b783f5]/20 bg-[#b783f5]/5 text-[#b783f5] text-xs font-semibold tracking-[0.25em] uppercase mb-4 backdrop-blur-sm">
             Accreditations & Badges
           </div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.03em] mb-4 text-white">
-            Professional{" "}
-            <span className="font-semibold text-white">
-              Achievements
-              <span className="text-[#b783f5]">.</span>
-            </span>
-          </h1>
+          <SplitText
+            text="Professional Achievements."
+            as="h1"
+            className="text-4xl md:text-5xl lg:text-6xl font-light tracking-[-0.03em] mb-4 text-white justify-center flex flex-wrap"
+            highlightWords={["Achievements."]}
+            accentBar={false}
+          />
 
-          <p className="text-base sm:text-lg text-white/50 max-w-2xl mx-auto leading-relaxed">
+          <p className="stagger-child text-base sm:text-lg text-white/50 max-w-2xl mx-auto leading-relaxed" style={{ "--i": 0 } as React.CSSProperties}>
             Interactive certificate album. Flips automatically every 4
             seconds, or click anywhere on the book to turn the page.
           </p>
-        </motion.div>
+        </div>
 
         {/* Interactive 3D Book Container */}
         <div
