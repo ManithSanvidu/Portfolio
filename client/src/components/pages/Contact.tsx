@@ -388,7 +388,6 @@ export function Contact() {
                 <div className="grid grid-cols-2 gap-6 pt-6 sm:pt-8">
                   <div className="text-xs sm:text-sm text-white/50 font-normal leading-relaxed">
                     <p className="text-white/80 font-medium">Available for Freelance</p>
-                    <p>Portfolio 2026</p>
                   </div>
 
                   <nav className="flex flex-col space-y-2.5 text-xs sm:text-sm font-normal">
